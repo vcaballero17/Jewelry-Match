@@ -1,0 +1,81 @@
+<!doctype html>
+<!-- ==========================================================
+     archive.html  -  "The Edit": all 12 objects with filters.
+     The filter chips and the cards are built by js/archive.js
+     from the shared data in js/data.js.
+     ========================================================== -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Edit — Jewelry Match</title>
+  <meta name="description" content="Browse all twelve pieces and filter by placement, form, material and mood.">
+  <script>document.documentElement.classList.add('js');</script>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="index.html">Jewelry Match</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="match.html">Find your match</a></li>
+          <li><a href="archive.html" aria-current="page">The Edit</a></li>
+          <li><a href="saved.html">Your Edit [<span data-fav-count>00</span>]</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="page simple-page">
+    <h1 class="step-title">The Edit</h1>
+    <p class="page-intro">Twelve objects, tagged by where they live on the body. Choose a filter in any group, or leave it on Any.</p>
+
+    <form class="filters" id="filters" aria-label="Filter the collection" onsubmit="return false">
+      <!-- The four filter groups are built by js/archive.js -->
+    </form>
+
+    <div class="toolbar">
+      <p class="count" id="count" role="status"></p>
+      <button class="btn btn--ghost" type="button" id="clear-all" aria-disabled="true">Clear all</button>
+    </div>
+
+    <!-- Compare mode (built by js/archive.js): a panel with the table, and a bar at the bottom -->
+    <section class="compare" id="compare-panel" aria-labelledby="compare-heading" hidden></section>
+
+    <div id="empty"></div>
+    <div class="object-grid" id="object-grid">
+      <noscript><p class="notice">The filters need JavaScript. Try the <a href="match.html">match quiz</a> instead.</p></noscript>
+    </div>
+  </main>
+
+  <div class="compare-bar" id="compare-bar" role="region" aria-label="Compare" hidden></div>
+
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <p>Jewelry Match is a student project. Every image on this site is AI-generated.</p>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="archive.html">The Edit</a></li>
+        <li><a href="saved.html">Your Edit</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <div id="live" class="vh" role="status" aria-live="polite"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/match.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/archive.js"></script>
+</body>
+</html>

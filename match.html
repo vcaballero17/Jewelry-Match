@@ -1,0 +1,79 @@
+<!doctype html>
+<!-- ==========================================================
+     match.html  -  the Find Your Match page
+     This file is only the SKELETON. The questions and results are
+     built by js/quiz.js and placed inside <div id="quiz-root">.
+     ========================================================== -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Find your match — Jewelry Match</title>
+  <meta name="description" content="Tell us where the piece should live and what you are drawn to. We return a small, explainable edit.">
+
+  <!-- Adds class "js" so CSS knows JavaScript is working. -->
+  <script>document.documentElement.classList.add('js');</script>
+
+  <!-- Order matters: tokens first, because the other files use them. -->
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="index.html">Jewelry Match</a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="match.html" aria-current="page">Find your match</a></li>
+          <li><a href="archive.html">The Edit</a></li>
+          <li><a href="saved.html">Your Edit [<span data-fav-count>00</span>]</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="page match">
+    <!-- The one and only h1. quiz.js changes its words for each step. -->
+    <h1 class="step-title" id="step-title" tabindex="-1">Body map</h1>
+
+    <div class="progress" id="progress"></div>
+
+    <div id="quiz-root">
+      <noscript>
+        <p class="notice">The match quiz needs JavaScript. You can still
+          <a href="archive.html">browse the full edit</a>.</p>
+      </noscript>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <p>Jewelry Match is a student project. Every image on this site is AI-generated.</p>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="archive.html">The Edit</a></li>
+        <li><a href="saved.html">Your Edit</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <!-- Screen-reader announcements (for Save confirmations) -->
+  <div id="live" class="vh" role="status" aria-live="polite"></div>
+
+  <!-- Order matters: data -> scoring -> storage -> helpers -> this page. -->
+  <script src="js/data.js"></script>
+  <script src="js/match.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/quiz.js"></script>
+</body>
+</html>

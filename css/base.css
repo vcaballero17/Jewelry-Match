@@ -1,0 +1,88 @@
+/* ==========================================================
+   base.css  -  resets and rules for plain HTML elements
+   ========================================================== */
+
+/* "border-box" means padding is counted INSIDE an element's width.
+   Without it, layouts overflow the screen in confusing ways. */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--black);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;   /* 17px: inside the spec's 16-18px range */
+  line-height: 1.55;
+}
+
+h1, h2, h3, p, ul, dl, dd, figure { margin: 0; }
+ul { padding: 0; list-style: none; }
+img, svg { display: block; max-width: 100%; }
+button, input { font: inherit; color: inherit; }
+a { color: inherit; }
+
+/* Visible keyboard focus. :focus-visible only appears for keyboard
+   users, which keeps the design clean for mouse users. */
+:focus-visible {
+  outline: 3px solid var(--oxblood);
+  outline-offset: 3px;
+}
+
+/* "Visually hidden": invisible on screen but read by screen readers. */
+.vh {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Skip link: first thing a keyboard user can Tab to. */
+.skip-link {
+  position: absolute;
+  left: var(--margin);
+  top: -100px;
+  z-index: 100;
+  padding: .75rem 1rem;
+  background: var(--black);
+  color: var(--paper);
+}
+.skip-link:focus { top: 8px; }
+
+/* Respect people who ask their device for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Small helper classes used on several pages */
+.page {
+  max-width: 90rem;
+  margin-inline: auto;
+  padding-inline: var(--margin);
+}
+
+.meta {
+  font-family: var(--font-meta);
+  font-size: .75rem;               /* 12px, inside the spec's 11-13px */
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -.045em;
+  line-height: .88;
+}
+
+/* The hidden attribute must always win over other display rules. */
+[hidden] { display: none !important; }

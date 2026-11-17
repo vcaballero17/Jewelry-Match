@@ -1,0 +1,35 @@
+/* ==========================================================
+   tokens.css  -  the design "variables" (spec section 07)
+   ----------------------------------------------------------
+   A CSS custom property (written --name) is a named value.
+   Every other CSS file uses var(--name) instead of typing
+   colors or sizes again. Change a token here and the whole
+   site updates. That is how a design system stays consistent.
+   ========================================================== */
+:root {
+  /* Color roles from the spec */
+  --paper:    #F5F1EA;  /* main ground */
+  --black:    #0A0A0A;  /* type and rules */
+  --chrome:   #B9BCC1;  /* decoration only (too light for small text) */
+  --oxblood:  #6E1320;  /* editorial emphasis */
+  --emerald:  #075A43;  /* collection accent */
+  --yellow:   #F2C94C;  /* stone / selection accent */
+
+  /* Added for accessibility: a darker grey that is readable
+     on paper. Use this for small metadata text, not --chrome. */
+  --ink-muted: #55585D;
+
+  /* Type: heavy display font, neutral body, mono-like captions.
+     These are "stacks": the browser uses the first one it has. */
+  --font-display: "Arial Black", "Helvetica Neue", Arial, sans-serif;
+  --font-body:    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-meta:    ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Spacing and layout */
+  --margin: clamp(16px, 4vw, 48px);   /* outer page margin */
+  --gutter: clamp(16px, 3vw, 32px);   /* space between columns */
+  --rule:   1px solid var(--black);   /* the thin catalog line */
+
+  /* Motion (spec: 150-300 ms) */
+  --dur: 200ms;
+}

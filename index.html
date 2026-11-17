@@ -1,0 +1,133 @@
+<!doctype html>
+<!-- ==========================================================
+     index.html  -  the Home page.
+     The masthead, the hero and the three quick picks are plain
+     HTML, so they work even without JavaScript. js/home.js adds
+     two things: it fills the "first look" cards from the shared
+     data, and it remembers which quick pick you tapped so the
+     quiz can start one step further along.
+     ========================================================== -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jewelry Match</title>
+  <meta name="description" content="An experimental jewelry archive for finding pieces by where and how you want to wear them.">
+  <script>document.documentElement.classList.add('js');</script>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="index.html">Jewelry Match</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="index.html" aria-current="page">Home</a></li>
+          <li><a href="match.html">Find your match</a></li>
+          <li><a href="archive.html">The Edit</a></li>
+          <li><a href="saved.html">Your Edit [<span data-fav-count>00</span>]</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="page home">
+    <h1 class="masthead"><span>Jewelry</span> <span>Match</span></h1>
+    <p class="meta masthead__meta">An experimental jewelry archive &middot; twelve objects &middot; placement first</p>
+
+    <section class="hero" aria-labelledby="hero-heading">
+      <figure class="hero__figure">
+        <img src="assets/images/lip-chain.jpg" width="1122" height="1402" fetchpriority="high"
+             alt="Close crop of glossy red lips and a hand resting at the chin, wearing a fine gold chain that links a ring to a bracelet at the wrist, against a black jacket">
+        <figcaption class="meta">Hand chain &mdash; worn across the hand</figcaption>
+      </figure>
+
+      <div class="hero__body">
+        <h2 class="hero__title" id="hero-heading">Where should it live?</h2>
+        <p class="hero__lead">Tell us where it should live and what you are drawn to. We will return a small, explainable edit, not an endless catalog.</p>
+
+        <ul class="quickpicks" aria-label="Start with a place">
+          <li>
+            <a class="quickpick" href="match.html" data-placement="ear">
+              <img src="assets/images/drop-study.jpg" alt="" width="1122" height="1402" loading="lazy">
+              <span class="meta" aria-hidden="true">001</span>
+              <span class="quickpick__label">Ear</span>
+            </a>
+          </li>
+          <li>
+            <a class="quickpick" href="match.html" data-placement="little-finger">
+              <img src="assets/images/kite-pinky.jpg" alt="" width="1122" height="1402" loading="lazy">
+              <span class="meta" aria-hidden="true">002</span>
+              <span class="quickpick__label">Little finger</span>
+            </a>
+          </li>
+          <li>
+            <a class="quickpick" href="match.html" data-placement="across-hand">
+              <img src="assets/images/afterimage.jpg" alt="" width="1122" height="1402" loading="lazy">
+              <span class="meta" aria-hidden="true">003</span>
+              <span class="quickpick__label">Across the hand</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="hero__actions">
+          <a class="btn" href="match.html">Find your match &rarr;</a>
+          <a class="btn btn--ghost" href="archive.html">Browse the edit</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section" aria-labelledby="featured-heading">
+      <h2 class="section-title" id="featured-heading">A first look</h2>
+      <div class="object-grid object-grid--plain" id="featured">
+        <noscript><p class="notice">Open <a href="archive.html">The Edit</a> to see all twelve objects.</p></noscript>
+      </div>
+      <p class="home-more"><a href="archive.html">See all twelve objects &rarr;</a></p>
+    </section>
+
+    <section class="home-section" aria-labelledby="how-heading">
+      <h2 class="section-title" id="how-heading">How it works</h2>
+      <ul class="how">
+        <li>
+          <h3 class="how__title">The body comes first.</h3>
+          <p>You start with a place: ear, finger, hand, neckline or ankle. Everything else follows from there.</p>
+        </li>
+        <li>
+          <h3 class="how__title">Four choices, weighted.</h3>
+          <p>Form, material and mood refine the match. Placement counts the most, because it decides what can be worn.</p>
+        </li>
+        <li>
+          <h3 class="how__title">Every match explained.</h3>
+          <p>Each piece comes with a percentage and the exact choices it shares with you. <a href="about.html#scoring">See how the scoring works.</a></p>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <p>Jewelry Match is a student project. Every image on this site is AI-generated.</p>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="archive.html">The Edit</a></li>
+        <li><a href="saved.html">Your Edit</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <div id="live" class="vh" role="status" aria-live="polite"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/match.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>

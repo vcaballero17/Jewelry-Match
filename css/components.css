@@ -1,0 +1,313 @@
+/* ==========================================================
+   components.css  -  reusable pieces (spec section 08)
+   Header, buttons, choice cards, hotspots, result cards.
+   ========================================================== */
+
+/* ---------- Header and navigation ---------- */
+.site-header { border-bottom: var(--rule); background: var(--paper); }
+
+.site-header__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem 1rem;
+  max-width: 90rem;
+  margin-inline: auto;
+  padding: .25rem var(--margin);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.1rem;
+  letter-spacing: -.03em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.site-nav ul { display: flex; flex-wrap: wrap; gap: 0 1.5rem; }
+
+.site-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: .8125rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.site-nav a:hover { text-decoration: underline; text-underline-offset: .35em; }
+.site-nav a[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: .35em;
+}
+
+.nav-toggle {
+  display: none;               /* shown on mobile only, and only when JS works */
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 1rem;
+  border: 1px solid var(--black);
+  background: transparent;
+  font-size: .8125rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+@media (max-width: 767px) {
+  .js .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
+  .js .site-nav { display: none; flex-basis: 100%; padding-bottom: .5rem; }
+  .js .site-nav[data-open="true"] { display: block; }
+  .site-nav ul { flex-direction: column; }
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  min-height: 44px;
+  min-width: 44px;
+  padding: .65rem 1.25rem;
+  border: 1px solid var(--black);
+  border-radius: 0;
+  background: var(--black);
+  color: var(--paper);
+  font-weight: 700;
+  font-size: .8125rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--dur), color var(--dur), border-color var(--dur);
+}
+.btn:hover { background: var(--oxblood); border-color: var(--oxblood); }
+
+.btn--ghost { background: transparent; color: var(--black); }
+.btn--ghost:hover { background: var(--black); border-color: var(--black); color: var(--paper); }
+
+/* "Disabled" look, but still focusable so we can explain why. */
+.btn[aria-disabled="true"],
+.btn[aria-disabled="true"]:hover {
+  background: transparent;
+  border-color: var(--ink-muted);
+  color: var(--ink-muted);
+  cursor: not-allowed;
+}
+
+/* ---------- Choice cards (radio buttons dressed as cards) ---------- */
+.choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr));
+  gap: var(--gutter);
+}
+
+.choice { position: relative; display: block; }
+
+/* The real radio sits invisibly on top of the whole card.
+   That keeps native keyboard and screen-reader behavior. */
+.choice input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.choice__body {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  height: 100%;
+  padding: .75rem;
+  border: 1px solid var(--black);
+  background: var(--paper);
+  transition: background var(--dur);
+}
+.choice:hover .choice__body { background: #ECE6DB; }
+
+.choice input:checked + .choice__body {
+  background: var(--yellow);
+  box-shadow: inset 0 0 0 2px var(--black);
+}
+.choice input:focus-visible + .choice__body {
+  outline: 3px solid var(--oxblood);
+  outline-offset: 3px;
+}
+
+.choice__label { font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.choice__caption { font-size: .9rem; color: var(--ink-muted); }
+.choice input:checked + .choice__body .choice__caption { color: var(--black); }
+
+/* "Selected" text so the state never relies on color alone. */
+.choice__state { display: none; font-weight: 700; font-size: .8125rem; text-transform: uppercase; }
+.choice input:checked + .choice__body .choice__state { display: block; }
+
+.choice__visual { height: 3.5rem; color: var(--black); }
+.choice__visual svg { height: 100%; width: auto; }
+
+.swatch { display: block; height: 3.5rem; border: 1px solid var(--black); }
+.swatch--silver { background: linear-gradient(135deg, #ECEEF0, #9A9DA3 50%, #E6E8EA); }
+.swatch--gold { background: linear-gradient(135deg, #E8CF8A, #B8902F 55%, #E3C26C); }
+.swatch--emerald { background: var(--emerald); }
+.swatch--yellow-stone { background: var(--yellow); }
+
+/* ---------- Body map hotspots ---------- */
+.hotspot {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transform: translate(-22px, -22px);   /* centers the dot on its x/y point */
+}
+.hotspot--left {
+  flex-direction: row-reverse;
+  transform: translate(calc(-100% + 22px), -22px);
+}
+
+.hotspot__dot { display: grid; place-items: center; width: 44px; height: 44px; }
+
+.hotspot__num {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--black);
+  border-radius: 50%;
+  background: var(--paper);
+  font-weight: 700;
+  font-size: .8125rem;
+  transition: background var(--dur), color var(--dur);
+}
+
+.hotspot__label {
+  padding: .1rem .4rem;
+  border: 1px solid var(--black);
+  background: var(--paper);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.hotspot:hover .hotspot__num { background: var(--yellow); }
+.hotspot[aria-pressed="true"] .hotspot__num {
+  background: var(--oxblood);
+  border-color: var(--oxblood);
+  color: var(--paper);
+}
+.hotspot[aria-pressed="true"] .hotspot__label { background: var(--yellow); }
+.hotspot[aria-pressed="true"] .hotspot__label::after { content: " \2713"; }  /* check mark */
+
+/* ---------- Image placeholder (used until real photos exist) ---------- */
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  aspect-ratio: 4 / 5;
+  padding: 1rem;
+  border: 1px solid var(--black);
+  color: var(--black);
+}
+.placeholder--silver { background: linear-gradient(135deg, #ECEEF0, #A7AAB0 55%, #DDE0E3); }
+.placeholder--gold { background: linear-gradient(135deg, #EBD590, #BE9636 55%, #E6C975); }
+.placeholder--yellow-stone { background: var(--yellow); }
+.placeholder--emerald { background: var(--emerald); color: var(--paper); }
+
+.placeholder__no { font-family: var(--font-meta); font-size: .75rem; letter-spacing: .06em; }
+.placeholder__name {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  line-height: .9;
+  letter-spacing: -.04em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+.media-img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; }
+
+/* ---------- Object card (archive, saved, "pair it with") ---------- */
+/* minmax(0, 1fr) = "one column, never wider than your container".
+   Without it, a wide child can stretch the column and the whole page. */
+.card { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: .5rem; min-width: 0; }
+.card__link { display: grid; grid-template-columns: minmax(0, 1fr); gap: .35rem; min-width: 0; text-decoration: none; }
+.card__name {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  line-height: .95;
+  letter-spacing: -.04em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+.card__link:hover .card__name { text-decoration: underline; text-underline-offset: .15em; }
+.card__facts { font-size: .875rem; color: var(--ink-muted); }
+.card__note { font-weight: 700; font-size: .875rem; }
+.btn--small { justify-self: start; padding: .4rem .9rem; }
+
+/* ---------- Filter chips (radio buttons dressed as small tags) ---------- */
+.chips { display: flex; flex-wrap: wrap; gap: .35rem; }
+.chip { position: relative; display: block; }
+.chip input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.chip span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 .75rem;
+  border: 1px solid var(--black);
+  background: var(--paper);
+  font-size: .8125rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  transition: background var(--dur), color var(--dur);
+}
+.chip:hover span { background: #ECE6DB; }
+.chip input:checked + span { background: var(--black); color: var(--paper); }
+.chip input:checked + span::before { content: "\2713\00a0"; }   /* check mark: not color alone */
+.chip input:focus-visible + span { outline: 3px solid var(--oxblood); outline-offset: 3px; }
+
+/* ---------- Section headings used on object / saved pages ---------- */
+.section-title {
+  padding-top: .75rem;
+  border-top: var(--rule);
+  margin-bottom: 1rem;
+  font-size: .875rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+/* ---------- Notices ---------- */
+.notice { padding: 1.5rem; border: 1px solid var(--black); }
+.notice h2 { font-family: var(--font-display); font-size: 1.5rem; text-transform: uppercase; letter-spacing: -.03em; margin-bottom: .5rem; }
+
+/* ---------- Footer ---------- */
+.site-footer { margin-top: 4rem; border-top: var(--rule); }
+.site-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .25rem 2rem;
+  max-width: 90rem;
+  margin-inline: auto;
+  padding: 1rem var(--margin);
+  font-size: .875rem;
+}
+.site-footer ul { display: flex; flex-wrap: wrap; gap: 0 1.5rem; }
+.site-footer a { display: inline-flex; align-items: center; min-height: 44px; }

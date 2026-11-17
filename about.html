@@ -1,0 +1,127 @@
+<!doctype html>
+<!-- ==========================================================
+     about.html  -  the concept, how the scoring works, where the
+     data lives, and how the images were made. All plain HTML:
+     nothing on this page depends on JavaScript.
+     ========================================================== -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About — Jewelry Match</title>
+  <meta name="description" content="The idea behind Jewelry Match, how the matching works, and how the images were made.">
+  <script>document.documentElement.classList.add('js');</script>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="index.html">Jewelry Match</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="match.html">Find your match</a></li>
+          <li><a href="archive.html">The Edit</a></li>
+          <li><a href="saved.html">Your Edit [<span data-fav-count>00</span>]</a></li>
+          <li><a href="about.html" aria-current="page">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="page simple-page">
+    <h1 class="step-title">About</h1>
+
+    <div class="prose">
+      <section aria-labelledby="idea-heading">
+        <h2 class="section-title" id="idea-heading">The idea</h2>
+        <p>Most jewelry sites start with a product grid. Jewelry Match starts with the body. You say where a piece should live, then what shapes, materials and moods you are drawn to, and it returns four pieces from a small collection of twelve.</p>
+        <p>It is a guide and an archive, not a shop. There are no prices, no basket and no checkout.</p>
+      </section>
+
+      <section aria-labelledby="scoring">
+        <h2 class="section-title" id="scoring">How your edit is chosen</h2>
+        <p>Each of the twelve pieces is tagged with one placement, one form, one material and one mood. When you answer the four questions, a piece earns points for every tag it shares with you. The four choices carry different weight, and together they add up to 100, so the total is already a percentage.</p>
+
+        <div class="table-wrap">
+          <table class="score-table">
+            <caption>Points for each matching choice</caption>
+            <thead>
+              <tr><th scope="col">Choice</th><th scope="col">Points</th><th scope="col">What it decides</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Placement</th><td>40</td><td>Where the piece lives on the body. This is the core choice.</td></tr>
+              <tr><th scope="row">Form</th><td>25</td><td>The shape language: angular, liquid, delicate or organic.</td></tr>
+              <tr><th scope="row">Material / color</th><td>20</td><td>Silver, gold, emerald or yellow stone.</td></tr>
+              <tr><th scope="row">Mood</th><td>15</td><td>The atmosphere: quiet, sharp, romantic or after dark.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="prose__sub">A worked example</h3>
+        <p>Kite Pinky is tagged little finger, angular, yellow stone and sharp. Here is how three different visitors score against it.</p>
+
+        <div class="table-wrap">
+          <table class="score-table">
+            <caption>Kite Pinky against three sets of answers</caption>
+            <thead>
+              <tr><th scope="col">Visitor</th><th scope="col">What matches</th><th scope="col">Sum</th><th scope="col">Result</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">A</th><td>All four</td><td>40 + 25 + 20 + 15</td><td>100%</td></tr>
+              <tr><th scope="row">B</th><td>Placement and material</td><td>40 + 20</td><td>60%</td></tr>
+              <tr><th scope="row">C</th><td>Form and mood</td><td>25 + 15</td><td>40%</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>The four highest scores are shown. If two pieces tie, the one that comes earlier in the collection is listed first, so the same answers always give the same order. If fewer than four pieces share your placement, the best remaining pieces fill the list and are marked as a weaker fit.</p>
+        <p>The explanation under each match only names choices that really matched. Nothing is guessed, and the matching never looks at your body, your looks or who you are. It only compares the four preferences you picked.</p>
+      </section>
+
+      <section aria-labelledby="data-heading">
+        <h2 class="section-title" id="data-heading">Your data</h2>
+        <p>There are no accounts and no server. Your saved pieces and your latest match are stored in this browser only, so clearing your browser data removes them.</p>
+        <p>When you send your edit to a friend, the link carries your four answers after the <code>#</code>. Anyone who opens the link sees your four matches. Nothing is uploaded anywhere.</p>
+      </section>
+
+      <section aria-labelledby="images-heading">
+        <h2 class="section-title" id="images-heading">Images and AI</h2>
+        <p>Every image on this site, including the Body Map photograph, was generated with OpenAI image generation in November 2026. The people shown are anonymous and the pieces are imaginary: they cannot be bought. The picture descriptions describe what each final image shows.</p>
+        <p>Jewelry Match was built as a university web design project, with AI assistance for the code and the images. The process, the prompts and the decisions are documented in the project files.</p>
+      </section>
+
+      <section aria-labelledby="access-heading">
+        <h2 class="section-title" id="access-heading">Accessibility</h2>
+        <p>The site is built to work with a keyboard and a screen reader, to stay usable at 200% zoom and on a phone, and to respect a device's reduced-motion setting. The aim is WCAG 2.1 AA. If something does not work for you, it is a bug in the project.</p>
+      </section>
+    </div>
+
+    <p class="home-more"><a class="btn" href="match.html">Find your match &rarr;</a></p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <p>Jewelry Match is a student project. Every image on this site is AI-generated.</p>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="archive.html">The Edit</a></li>
+        <li><a href="saved.html">Your Edit</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <div id="live" class="vh" role="status" aria-live="polite"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/match.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>

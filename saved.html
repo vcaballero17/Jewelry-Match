@@ -1,0 +1,66 @@
+<!doctype html>
+<!-- ==========================================================
+     saved.html  -  "Your Edit": the latest match and the pieces
+     you saved. Everything is stored in THIS browser only; there
+     is no account. js/saved.js builds the page.
+     ========================================================== -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your Edit — Jewelry Match</title>
+  <meta name="description" content="Your latest match and the pieces you saved, stored in this browser.">
+  <script>document.documentElement.classList.add('js');</script>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="index.html">Jewelry Match</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="match.html">Find your match</a></li>
+          <li><a href="archive.html">The Edit</a></li>
+          <li><a href="saved.html" aria-current="page">Your Edit [<span data-fav-count>00</span>]</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="page simple-page">
+    <h1 class="step-title">Your edit</h1>
+    <p class="page-intro">Saved in this browser. There is no account, so clearing your browser data removes your edit.</p>
+
+    <div id="saved-root">
+      <noscript><p class="notice">This page needs JavaScript. <a href="archive.html">Browse The Edit</a>.</p></noscript>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <p>Jewelry Match is a student project. Every image on this site is AI-generated.</p>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="archive.html">The Edit</a></li>
+        <li><a href="saved.html">Your Edit</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <div id="live" class="vh" role="status" aria-live="polite"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/match.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/saved.js"></script>
+</body>
+</html>
