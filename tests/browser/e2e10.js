@@ -68,6 +68,30 @@ const pick = async (p, name) => { await p.locator('label.choice', { hasText: nam
   check('"Build my own look" starts at the ear', (await f.textContent('h1')) === 'Ear' && f.url().endsWith('#ear'));
   check('...and nothing was saved from the friend\'s look', await f.evaluate(() => JM.storage.getFavorites().length === 0 && Object.keys(JM.storage.getLook()).length === 0));
 
+  console.log('\nSomeone who already started a look opens a friend\'s link, then taps "Build my own look"');
+  const old = await (await b.newContext({ viewport: { width: 1280, height: 900 } })).newPage(); watch(old);
+  await old.goto(BASE + 'look.html');
+  await old.evaluate(() => { JM.storage.setLook('ear', 'emerald-fold'); JM.storage.setLook('neckline', 'night-cross'); JM.storage.setLook('ankle', 'none'); });
+  await old.goto(link); await old.waitForTimeout(150);
+  await old.reload(); await old.waitForTimeout(200);
+  check('they see the friend\'s look, not their own', (await old.textContent('h1')) === 'A friend’s look');
+  await old.click('button:text-is("Build my own look")'); await old.waitForTimeout(200);
+  check('starts at the beginning (ear)', (await old.textContent('h1')) === 'Ear' && old.url().endsWith('#ear'));
+  check('nothing from before is selected', (await old.locator('input[name=look-piece]:checked').count()) === 0);
+  check('Continue is off until they choose', (await old.getAttribute('#continue', 'aria-disabled')) === 'true');
+  check('earlier choices were cleared', await old.evaluate(() => Object.keys(JM.storage.getLook()).length === 0));
+  await old.locator('label.choice', { hasText: 'Emerald Fold' }).click(); await old.click('#continue'); await old.waitForTimeout(150);
+  check('neckline also starts empty', (await old.textContent('h1')) === 'Neckline' && (await old.locator('input[name=look-piece]:checked').count()) === 0);
+
+  console.log('\n"Start a new look" on your own final screen does the same');
+  const again = await (await b.newContext({ viewport: { width: 1280, height: 900 } })).newPage(); watch(again);
+  await again.goto(link.split('#')[0]);
+  await again.evaluate(() => { JM.storage.setLook('ear', 'drop-study'); JM.storage.setLook('neckline', 'melt-collar'); });
+  await again.goto(link.split('#')[0] + '#done'); await again.waitForTimeout(150); await again.reload(); await again.waitForTimeout(200);
+  await again.click('button:text-is("Start a new look")'); await again.waitForTimeout(200);
+  check('goes to the ear with nothing selected', (await again.textContent('h1')) === 'Ear' && (await again.locator('input[name=look-piece]:checked').count()) === 0);
+  check('earlier choices cleared', await again.evaluate(() => Object.keys(JM.storage.getLook()).length === 0));
+
   console.log('\nBroken links are explained, never guessed');
   for (const bad of ['#look-xyz', '#look-006-009-000-001', '#look-999-009-000-001-010', '#look-000-000-000-000-000', '#look-001-000-000-000-000', '#look-006-009-000-001-010-011']) {
     const p = await (await b.newContext()).newPage(); watch(p);

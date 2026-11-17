@@ -148,6 +148,7 @@ tests/  tools/  docs/
 - **Never trust the link:** `decodeLook` checks that every number is a real piece AND belongs to its place (Kite Pinky in the "ear" slot is rejected). Anything wrong returns `null`, and the page shows "This link does not work" with a button to build your own look. Unit tests try all 431 possible looks plus 14 broken links.
 - **What a friend sees:** "A friend's look": only the pieces chosen, **side by side in one line**, with a way to build their own look. Nothing is saved on the friend's device. On phones the line scrolls sideways inside its own box (CSS `grid-auto-flow: column` + `overflow-x: auto`), while the page itself never scrolls sideways.
 - **Code tidy-up:** the share box (field + Copy + phone share sheet) is now one reusable function, `JM.ui.shareBlock`, used by both the quiz (old-style links keep working) and the look.
+- **Bug found by testing it myself, then fixed:** "Build my own look" in a friend's view opened the screens with *your own earlier choices* already filled in, so it felt like an unfinished page. Both "Build my own look" and "Start a new look" now call one function, `startFresh()` in `js/look.js`: it clears the earlier look choices (saved pieces stay saved) and opens the ear screen empty. One shared function means the two buttons can never behave differently.
 - **Say:** "I made the journey linear and put the one action that matters, sharing, at the end, and I validated the link on the receiving side."
 
 ---

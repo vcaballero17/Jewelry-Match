@@ -35,6 +35,15 @@
     window.location.hash = step >= PLACES.length ? 'done' : PLACES[step];
   }
 
+  /* Start a brand-new look: forget the earlier choices (the saved pieces
+     stay saved) and open the first place. Used by "Start a new look" and
+     by "Build my own look" in a friend's view, so both behave the same. */
+  function startFresh() {
+    PLACES.forEach(function (place) { JM.storage.setLook(place, null); });
+    JM.ui.announce('Starting a new look.');
+    go(0);
+  }
+
   function findItem(id) {
     return JM.jewelry.filter(function (j) { return j.id === id; })[0] || null;
   }
@@ -224,18 +233,14 @@
 
     root.appendChild(el('div', { class: 'step-actions' }, [
       el('a', { class: 'btn btn--ghost', href: 'saved.html' }, ['See it in Your Edit']),
-      el('button', { type: 'button', class: 'btn btn--ghost', onclick: function () {
-        PLACES.forEach(function (place) { JM.storage.setLook(place, null); });
-        JM.ui.announce('Look cleared. Starting a new look.');
-        go(0);
-      } }, ['Start a new look'])
+      el('button', { type: 'button', class: 'btn btn--ghost', onclick: startFresh }, ['Start a new look'])
     ]));
   }
 
   /* ----- A friend opened a look link: show what was chosen, in a line.
          Nothing is saved on this visitor's device. ----- */
   function renderShared(look) {
-    var mine = function () { window.location.hash = 'ear'; };     // leave the shared view, start your own
+    var mine = startFresh;     // leave the shared view and begin your own look from the start
 
     progressEl.textContent = '';
     if (!look) {
