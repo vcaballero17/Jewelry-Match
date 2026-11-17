@@ -58,7 +58,7 @@ const names = p => p.locator('.choice__label').allTextContents();
     check(T('progress says look is ready'), /ready/i.test(await p.textContent('#progress')));
     check(T('summary: 3 of 5 filled'), /3 of 5 places filled/.test(await p.textContent('.look__count')));
     check(T('two skipped places say Skipped'), (await p.locator('.look__empty', { hasText: 'Skipped' }).count()) === 2);
-    await p.click('.look__slot:has(h3:text-is("Neckline")) button'); await p.waitForTimeout(150);
+    await p.click('.look__slot:has(h2:text-is("Neckline")) button'); await p.waitForTimeout(150);
     check(T('Choose on the final screen jumps to that place'), (await p.textContent('h1')) === 'Neckline');
     await p.goto(BASE + 'look.html#done'); await p.waitForTimeout(150);
 

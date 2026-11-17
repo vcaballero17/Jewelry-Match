@@ -34,7 +34,9 @@
 .site-nav a {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-height: 44px;
+  min-width: 44px;
   font-size: .8125rem;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -310,7 +312,7 @@
   font-size: .875rem;
 }
 .site-footer ul { display: flex; flex-wrap: wrap; gap: 0 1.5rem; }
-.site-footer a { display: inline-flex; align-items: center; min-height: 44px; }
+.site-footer a { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; justify-content: center; }
 
 /* ---------- Filter chip counts and switched-off chips ---------- */
 .chip__n { font-weight: 400; margin-left: .3em; }

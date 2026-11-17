@@ -74,7 +74,7 @@ const check = (n, ok, d) => { console.log((ok ? '  PASS  ' : '  FAIL  ') + n + (
   await n.goto(BASE + 'look.html#ankle'); await n.waitForTimeout(150);
   check('no "Finish now" on the last place (Finish does it)', (await n.locator('#finish-now').count()) === 0 && (await n.textContent('#continue')) === 'Finish');
   await n.goto(BASE + 'look.html#done'); await n.waitForTimeout(150);
-  await n.click('.look__slot:has(h3:text-is("Neckline")) button'); await n.waitForTimeout(150);
+  await n.click('.look__slot:has(h2:text-is("Neckline")) button'); await n.waitForTimeout(150);
   check('"Choose" on the end screen opens that place', (await n.textContent('h1')) === 'Neckline');
 
   console.log('\nPhones');

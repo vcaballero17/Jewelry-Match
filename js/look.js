@@ -30,6 +30,33 @@
     return index === -1 ? 0 : index;
   }
 
+  /* The "walk": which places were handled in THIS walk-through. Pieces left
+     over from an earlier visit (or from Your Edit) are not part of the new look.
+     Kept in sessionStorage so a reload of the last screen still works. */
+  var WALK_KEY = 'jm:walk:v1';
+  function readWalk() {
+    try { return JSON.parse(sessionStorage.getItem(WALK_KEY) || '[]'); } catch (e) { return []; }
+  }
+  function writeWalk(list) {
+    try { sessionStorage.setItem(WALK_KEY, JSON.stringify(list)); } catch (e) { /* no storage: fine */ }
+  }
+  function addToWalk(place) {
+    var list = readWalk();
+    if (list.indexOf(place) === -1) { list.push(place); writeWalk(list); }
+  }
+  // The look as this walk-through built it (other places count as "not chosen").
+  function walkLook() {
+    var saved = JM.storage.getLook(), walk = readWalk(), out = {};
+    PLACES.forEach(function (place) { out[place] = walk.indexOf(place) !== -1 ? saved[place] : null; });
+    return out;
+  }
+  // Arriving from another page (a link, not a reload or Back) starts a new walk.
+  (function () {
+    var nav = window.performance && performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+    var hash = window.location.hash.replace('#', '');
+    if (nav && nav.type === 'navigate' && hash.indexOf('look-') !== 0 && hash !== 'done') writeWalk([]);
+  })();
+
   function go(step) {
     // Changing the hash fires "hashchange", which draws the new screen.
     window.location.hash = step >= PLACES.length ? 'done' : PLACES[step];
@@ -40,6 +67,7 @@
      by "Build my own look" in a friend's view, so both behave the same. */
   function startFresh() {
     PLACES.forEach(function (place) { JM.storage.setLook(place, null); });
+    writeWalk([]);
     JM.ui.announce('Starting a new look.');
     go(0);
   }
@@ -79,7 +107,7 @@
     });
 
     // What to show as selected: the earlier choice, or the best match.
-    var look = JM.storage.getLook();
+    var look = walkLook();            // only what this walk-through chose
     var selected = null;
     if (look[place] && look[place] !== 'none') selected = look[place];
     else if (!look[place] && answers && items.length) selected = items[0].item.id;
@@ -121,6 +149,7 @@
     function commit() {
       var item = findItem(selected);
       JM.storage.setLook(place, selected);
+      addToWalk(place);
       if (!JM.storage.isFavorite(selected)) JM.storage.toggleFavorite(selected);
       JM.ui.updateFavCount();
       JM.ui.announce(item.name + ' added to your look.');
@@ -141,7 +170,7 @@
     // (including the piece selected on this screen) and jump to the send screen.
     function onFinishNow() {
       if (selected) commit();
-      var look = JM.storage.getLook();
+      var look = walkLook();
       var any = PLACES.some(function (p) { return look[p] && look[p] !== 'none'; });
       if (!any) {
         hint.textContent = 'Choose at least one piece first, then you can finish.';
@@ -154,6 +183,7 @@
 
     function onSkip() {
       JM.storage.setLook(place, 'none');
+      addToWalk(place);
       JM.ui.announce(label + ' skipped.');
       go(step + 1);
     }
@@ -211,7 +241,7 @@
   /* ----- The last screen: your decision, ready to send ----- */
   function renderDone() {
     titleEl.textContent = 'Your look';
-    var look = JM.storage.getLook();
+    var look = walkLook();
     var filled = 0;
 
     var slots = PLACES.map(function (place, step) {
@@ -219,7 +249,7 @@
       var item = look[place] && look[place] !== 'none' ? findItem(look[place]) : null;
       if (item) filled++;
 
-      var parts = [el('h3', { class: 'look__place', text: label })];
+      var parts = [el('h2', { class: 'look__place', text: label })];
       parts.push(item ? pieceLink(item) : el('p', { class: 'look__empty', text: look[place] === 'none' ? 'Skipped.' : 'Not chosen yet.' }));
       parts.push(el('button', { type: 'button', class: 'btn btn--ghost btn--small', onclick: function () { go(step); } }, [
         item ? 'Change' : 'Choose', el('span', { class: 'vh', text: ' ' + label.toLowerCase() })
@@ -287,7 +317,7 @@
       .filter(function (place) { return look[place] !== 'none'; })
       .map(function (place) {
         return el('li', { class: 'look__slot' }, [
-          el('h3', { class: 'look__place', text: JM.labelOf('placement', place) }),
+          el('h2', { class: 'look__place', text: JM.labelOf('placement', place) }),
           pieceLink(findItem(look[place]))
         ]);
       });

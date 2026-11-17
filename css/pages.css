@@ -324,7 +324,7 @@
 .cmp { min-width: 36rem; }
 .cmp thead th { background: var(--paper); color: var(--black); text-transform: none; font-size: 1rem; vertical-align: top; }
 .cmp thead th .media-img, .cmp thead th .placeholder { width: 100%; max-width: 9rem; margin-bottom: .5rem; }
-.cmp__name { display: block; font-family: var(--font-display); font-weight: 900; font-size: 1.25rem; line-height: .95; letter-spacing: -.04em; text-transform: uppercase; }
+.cmp__name { display: block; padding-block: .85rem; font-family: var(--font-display); font-weight: 900; font-size: 1.25rem; line-height: .95; letter-spacing: -.04em; text-transform: uppercase; }
 .cmp__same { display: block; font-weight: 400; font-size: .75rem; color: var(--ink-muted); }
 
 /* ==========================================================
@@ -357,6 +357,7 @@
 /* The look as ONE LINE of pieces, side by side. On a phone the line
    scrolls sideways inside its own box; the page itself never does. */
 .look--row {
+  position: relative;   /* keeps the visually-hidden text inside the scroll box, so it cannot widen the page */
   grid-template-columns: none;
   grid-auto-flow: column;
   grid-auto-columns: minmax(11rem, 14rem);

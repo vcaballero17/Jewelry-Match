@@ -163,6 +163,31 @@ tests/  tools/  docs/
 
 ---
 
+## Stage 16: Accessibility review (WCAG 2.1 AA / European Accessibility Act)
+
+- **Why:** the site must be usable by people with screen readers, keyboards, zoom and low vision. A university project should show this was checked with a tool, not only assumed.
+- **Tool:** `tests/browser/a11y.js` runs **axe-core** (an open-source checker) on 16 pages and states, then adds my own checks that axe cannot do: zoom 200% and 400% (640 px and 320 px wide, so the page must reflow with no sideways scroll), the WCAG text-spacing override, button size, keyboard focus rings and the skip link, the sticky bar not hiding focus, reduced motion, and the colour contrast of the palette.
+- **What it found and how I fixed it:**
+  1. **Two regions had the same name** ("Compare"): the bottom bar is now "Pieces to compare" (`archive.html`). Screen-reader users list landmarks, so every name must be unique.
+  2. **Heading jumped from h1 to h3** on the look screens. The place names (Ear, Neckline...) are now `h2` in `js/look.js`. Headings are an outline: you cannot skip a level.
+  3. **Page scrolled sideways on the final look screen.** Cause: visually-hidden text (`.vh`) is `position:absolute`, and an absolute element escapes a scroll box unless the box is `position:relative`. Fix: `position:relative` on `.look--row` (`css/pages.css`).
+  4. **Small tap targets:** the Home/About links were 39 px wide and the piece names in Compare were 19 px tall. Now at least 44 px (`min-width`, `padding-block`).
+  5. **Test bug, not site bug:** loading `look.html#neckline` fired a hash change that moved focus. The test now loads the address once.
+- **Passed first time:** contrast of the palette, visible focus ring on every Tab stop, skip link, no keyboard trap, reduced motion.
+- **Say:** "I did not trust my eyes. I ran an accessibility checker and fixed everything it reported, and I keep it as a test so it cannot regress."
+
+---
+
+## Stage 17: Bug fix, "Finish now" showed pieces from an old visit
+
+- **Bug (found by my user):** choosing one ear piece and pressing "Finish now" showed all five places filled.
+- **Cause:** every chosen piece is saved on the device (localStorage), and the last screen read *everything saved*, including pieces from an earlier visit.
+- **Fix** (`js/look.js`): the page now remembers which places were handled in *this* walk-through (`sessionStorage`, key `jm:walk:v1`). The last screen and the link use only those. A new walk starts when you arrive through a link; a reload or Back keeps it. Saved pieces stay in Your Edit.
+- **Test:** `tests/browser/e2e12.js` saves a full old look, starts again, finishes with one piece and checks "1 of 5" and a one-piece link.
+- **Say:** "A bug taught me the difference between what is saved and what belongs to this session."
+
+---
+
 ## How I test (say this too)
 
 1. **Unit tests** (`node tests/match.test.js`): the scoring and sharing logic.

@@ -42,6 +42,8 @@ node tests/match.test.js        # scoring, filters, share links
 node tools/check-links.js       # every link and image exists
 npm i -g playwright             # once, for the browser tests
 node tests/browser/e2e.js       # quiz journey (uses the Google Chrome installed on your computer)
+npm i -g axe-core               # once, for the accessibility audit
+node tests/browser/a11y.js      # axe-core + zoom, keyboard, target size, contrast
 ```
 
 ## Images
