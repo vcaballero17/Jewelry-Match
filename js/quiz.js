@@ -452,6 +452,12 @@
       el('h2', { id: 'results-heading', class: 'vh', text: state.shared ? 'Their four matches' : 'Your four matches' }),
       grid
     ]));
+    if (!state.shared) {
+      root.appendChild(el('div', { class: 'results-next' }, [
+        el('p', { text: 'Next: choose one piece for each place on the body.' }),
+        el('a', { class: 'btn', href: 'look.html#ear' }, ['Continue: build your look \u2192'])
+      ]));
+    }
     root.appendChild(buildShare());
   }
 

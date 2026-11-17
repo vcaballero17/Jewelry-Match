@@ -120,7 +120,25 @@ tests/  tools/  docs/
 ## Stage 11: README and tests shipped
 
 - `README.md` explains the project; `tests/browser/` now holds all six browser test files (they find the site folder by themselves).
-- **Test totals now:** 30 unit tests, six browser suites, 130 links checked.
+- **Test totals now:** 30 unit tests, seven browser suites, 150 links checked.
+
+## Stage 12: Fixing empty filters (feedback from testing the live site)
+
+- **The problem you found:** Ankle + Organic showed "0 objects". It isn't a bug. There are 12 pieces and each place has only 2 or 3, so most filter combinations are empty. (Ankle has only Delicate and Angular pieces.)
+- **Fix 1: counts and switched-off options** (`js/archive.js`, `updateChips`, `countIf`). Each chip shows how many pieces would be left if you chose it. A chip with 0 is disabled (dashed border, struck through). `countIf` re-runs the same `JM.filterItems` used for the results, with that one chip tried out. A chip that is currently chosen is never disabled, so you can always undo it.
+- **Fix 2: "Closest pieces"** (`closestItems`). If a link still leads to an empty result, the page shows the nearest pieces, scored with the same weights as the quiz (placement 40, form 25, material 20, mood 15), each labelled "Matches: placement" and so on.
+- **CSS bug I made and fixed:** `.chip span` also hit the count inside the chip and drew it as a box. The fix is the *child selector* `.chip > span`, which means "only direct children".
+- **Say:** "I tested the live site, found dead ends, and fixed them by preventing impossible choices, not by hiding the problem."
+
+## Stage 13: Guided "Build your look" (feedback: too much back and forth)
+
+- **Files:** `look.html`, `js/look.js`, `js/quiz.js` (Continue button), `js/saved.js`, `js/storage.js`, `css/pages.css`
+- **What:** after the quiz, **Continue: build your look** opens one screen per place: ear, neckline, hand, little finger, ankle. Each screen has Continue, Back and Skip this place. The last screen shows your whole look.
+- **The address is the state:** `look.html#ear`, `#neckline`, ... `#done`. JavaScript reads `window.location.hash` and redraws on the `hashchange` event. So the browser's Back button and reloading both work with no extra code.
+- **Smart defaults:** if you took the quiz, pieces are ordered best match first (using `JM.scoreObject`) and the best one is preselected, so Continue is often one click.
+- **Choosing also saves:** a chosen piece is added to Your Edit, so you never have to save it separately. "Skip" is stored as `'none'`, so Your Edit knows it was skipped on purpose.
+- **Accessibility:** Continue uses `aria-disabled` and explains itself if pressed with nothing chosen. Focus moves to the heading on each new screen. The progress is words plus segments.
+- **Say:** "I replaced scattered pages with one guided path. The URL stores where you are, so there is no hidden state."
 
 ---
 
@@ -144,7 +162,7 @@ tests/  tools/  docs/
 ## Still to do
 
 - [ ] Ask the teacher about AI-generated images
-- [ ] Decide the Kite Pinky / Orbit Signet "little finger" photo mismatch
+- [x] Kite Pinky / Orbit Signet photos: decided to keep them. The ring is on an outer finger and reads as the little finger; both pieces stay tagged "little finger" as the spec requires. (Option considered and declined: regenerate the Kite Pinky photo with the ring clearly on the pinky.)
 - [x] README written
 - [ ] GitHub Pages deployment (due **20 Nov 2026**)
 - [ ] Accessibility check (200% zoom, contrast)

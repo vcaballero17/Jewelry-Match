@@ -48,6 +48,8 @@
   }
 
   /* ----- Build the four filter groups once ----- */
+  var chipRefs = [];     // every chip, so we can refresh its count after each change
+
   function buildChip(dim, value, label) {
     var input = el('input', {
       type: 'radio',
@@ -60,7 +62,28 @@
         update();
       }
     });
-    return el('label', { class: 'chip' }, [input, el('span', { text: label })]);
+    var count = el('span', { class: 'chip__n' });
+    chipRefs.push({ dim: dim, value: value, input: input, count: count });
+    return el('label', { class: 'chip' }, [input, el('span', {}, [label + ' ', count])]);
+  }
+
+  /* How many pieces would be left if this chip were chosen, keeping the
+     OTHER groups as they are now. Zero means choosing it is a dead end. */
+  function countIf(dim, value) {
+    var test = {};
+    JM.DIMENSIONS.forEach(function (d) { test[d] = filters[d]; });
+    test[dim] = value;
+    return JM.filterItems(JM.jewelry, test).length;
+  }
+
+  function updateChips() {
+    chipRefs.forEach(function (chip) {
+      var n = countIf(chip.dim, chip.value);
+      chip.count.textContent = '(' + n + ')';
+      // A chip with nothing behind it is switched off, unless it is the one
+      // currently chosen (so the visitor can always see and undo their choice).
+      chip.input.disabled = n === 0 && !chip.input.checked;
+    });
   }
 
   JM.DIMENSIONS.forEach(function (dim) {
@@ -221,6 +244,18 @@
     }
   }
 
+  /* ----- When nothing matches exactly: the nearest pieces.
+         Same idea as the quiz: each chosen group is worth its weight in points. ----- */
+  function closestItems(active) {
+    var scored = JM.jewelry.map(function (item, index) {
+      var matched = active.filter(function (dim) { return item[dim] === filters[dim]; });
+      var score = matched.reduce(function (sum, dim) { return sum + JM.WEIGHTS[dim]; }, 0);
+      return { item: item, index: index, score: score, matched: matched };
+    }).filter(function (r) { return r.score > 0; });
+    scored.sort(function (a, b) { return b.score - a.score || a.index - b.index; });   // ties: collection order
+    return scored.slice(0, 4);
+  }
+
   /* ----- Redraw the results ----- */
   function update() {
     var items = JM.filterItems(JM.jewelry, filters);
@@ -235,12 +270,26 @@
       }).join(', ');
 
       emptyEl.appendChild(el('div', { class: 'notice' }, [
-        el('h2', { text: 'No objects match' }),
-        el('p', { text: 'Active filters — ' + summary + '. Try removing one.' }),
+        el('h2', { text: 'No piece has all of these' }),
+        el('p', { text: 'Active filters \u2014 ' + summary + '. Try removing one.' }),
         el('div', { class: 'empty-actions' }, [
           el('button', { type: 'button', class: 'btn', onclick: clearAll }, ['Clear all'])
         ])
       ]));
+
+      var near = closestItems(active);
+      if (near.length) {
+        emptyEl.appendChild(el('h2', { class: 'section-title near__title', text: 'Closest pieces' }));
+        emptyEl.appendChild(el('p', { class: 'near__intro', text: 'These are the nearest we have. Each one says which of your filters it matches.' }));
+        emptyEl.appendChild(el('div', { class: 'object-grid object-grid--plain' }, near.map(function (r) {
+          var card = JM.ui.objectCard(r.item, {
+            headingLevel: 'h3',
+            note: 'Matches: ' + r.matched.map(function (d) { return DIM_LABEL[d].toLowerCase(); }).join(', ')
+          });
+          card.appendChild(compareBox(r.item));
+          return card;
+        })));
+      }
     } else {
       items.forEach(function (item) {
         var card = JM.ui.objectCard(item);
@@ -249,6 +298,7 @@
       });
     }
 
+    updateChips();
     countEl.textContent = items.length + (items.length === 1 ? ' object' : ' objects');
 
     if (active.length) {

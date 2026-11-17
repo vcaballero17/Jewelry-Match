@@ -50,7 +50,11 @@ const names = page => page.locator('.object-grid .card__name').allTextContents()
   check('count says 2 objects', (await page.textContent('#count')) === '2 objects');
   check('Clear all becomes enabled', (await page.getAttribute('#clear-all', 'aria-disabled')) === null);
 
-  await page.check('#filter-mood-after-dark', { force: true });
+  check('dead-end chip (After dark) is switched off', await page.isDisabled('#filter-mood-after-dark'));
+  check('dead-end chip shows a count of 0', /\(0\)/.test(await page.locator('label.chip:has(#filter-mood-after-dark)').textContent()));
+  check('possible chip (Sharp) is still on and shows a count', !(await page.isDisabled('#filter-mood-sharp')) && /\(1\)/.test(await page.locator('label.chip:has(#filter-mood-sharp)').textContent()));
+  // A dead end can still be reached from a link, so the empty state must still work:
+  await page.goto(BASE + 'archive.html?placement=neckline&material=gold&mood=after-dark');
   check('three filters with no match -> 0 objects', (await page.textContent('#count')) === '0 objects');
   const emptyText = await page.textContent('#empty');
   check('empty state names every active filter', ['Placement: Neckline', 'Material / color: Gold', 'Mood: After dark'].every(s => emptyText.includes(s)), emptyText);

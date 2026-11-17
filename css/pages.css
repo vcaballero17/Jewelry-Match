@@ -340,3 +340,16 @@
 .look__option { display: flex; align-items: center; gap: .5rem; min-height: 44px; font-size: .9rem; cursor: pointer; overflow-wrap: anywhere; }
 .look__option input { width: 1.25rem; height: 1.25rem; margin: 0; flex: none; accent-color: var(--oxblood); }
 .look__option:focus-within { outline: 3px solid var(--oxblood); outline-offset: 2px; }
+
+/* "Closest pieces" under an empty filter result */
+.near__title { margin-top: 2rem; }
+.near__intro { max-width: 60ch; margin-bottom: 1rem; }
+
+/* ==========================================================
+   Guided look (look.html) and the "next step" on the results page
+   ========================================================== */
+.look-flow__fieldset { margin: 1.5rem 0 0; padding: 0; border: 0; min-width: 0; }
+.look-flow .choices { grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); }
+.look-flow__score { font-weight: 700; font-size: .8125rem; letter-spacing: .04em; text-transform: uppercase; }
+.look__start { margin-top: 1.25rem; }
+.results-next { display: grid; gap: .75rem; justify-items: start; margin-top: 2.5rem; padding: 1.25rem; border: 1px solid var(--black); }

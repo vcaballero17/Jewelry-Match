@@ -143,7 +143,8 @@
     },
 
     /* ----- "Build your look": which saved piece is chosen for each place.
-           Stored as { ear: 'drop-study', ... }. Anything invalid is dropped. ----- */
+           Stored as { ear: 'drop-study', neckline: 'none', ... } ('none' = skipped on purpose).
+           Anything invalid is dropped. ----- */
     getLook: function () {
       var raw = read('localStorage', KEYS.look);
       var clean = {};
@@ -151,7 +152,8 @@
       JM.OPTIONS.placement.forEach(function (opt) {
         var id = raw[opt.value];
         var item = JM.jewelry.filter(function (j) { return j.id === id; })[0];
-        if (item && item.placement === opt.value) clean[opt.value] = id;
+        if (id === 'none') clean[opt.value] = 'none';                       // "skipped on purpose"
+        else if (item && item.placement === opt.value) clean[opt.value] = id;
       });
       return clean;
     },

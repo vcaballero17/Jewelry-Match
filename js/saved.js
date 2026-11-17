@@ -130,6 +130,7 @@
 
     if (!items.length) {
       lookHolder.appendChild(el('p', { text: 'Save a piece to start building your look. You can wear one piece in each of five places.' }));
+      lookHolder.appendChild(el('p', { class: 'look__start' }, [el('a', { class: 'btn', href: 'look.html#ear' }, ['Build it step by step'])]));
       return;
     }
 
@@ -137,7 +138,9 @@
     var filled = 0;
     var slots = LOOK_SLOTS.map(function (place) {
       var options = items.filter(function (i) { return i.placement === place; });
-      var pick = options.filter(function (i) { return i.id === chosen[place]; })[0] || options[0] || null;
+      var pick = chosen[place] === 'none'
+        ? null                                   // skipped on purpose in the guided look
+        : (options.filter(function (i) { return i.id === chosen[place]; })[0] || options[0] || null);
       if (pick) filled++;
       return lookSlot(place, options, pick);
     });
@@ -146,6 +149,7 @@
       el('strong', { text: filled + ' of ' + LOOK_SLOTS.length }), ' places filled. One piece for each place on the body, chosen from your saved pieces.'
     ]));
     lookHolder.appendChild(el('ul', { class: 'look' }, slots));
+    lookHolder.appendChild(el('p', { class: 'look__start' }, [el('a', { class: 'btn btn--ghost', href: 'look.html#ear' }, ['Build it step by step'])]));
   }
 
   /* ----- Section 1: latest match ----- */
