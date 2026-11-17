@@ -20,7 +20,7 @@
   var lookHolder = el('div', { class: 'saved-section' });
 
   // Body order, top to bottom. Each place gets exactly one slot.
-  var LOOK_SLOTS = ['ear', 'neckline', 'across-hand', 'little-finger', 'ankle'];
+  var LOOK_SLOTS = JM.LOOK_PLACES;
 
   /* Open the quiz pre-filled with the saved answers.
      step 0 = start of the quiz, step 4 = straight to the results. */

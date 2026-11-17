@@ -71,10 +71,10 @@ const names = p => p.locator('.choice__label').allTextContents();
 
     // Start again clears
     await p.goto(BASE + 'look.html#done'); await p.waitForTimeout(150);
-    await p.click('button:text-is("Start again")'); await p.waitForTimeout(150);
-    check(T('Start again returns to the ear'), (await p.textContent('h1')) === 'Ear');
+    await p.click('button:text-is("Start a new look")'); await p.waitForTimeout(150);
+    check(T('Start a new look returns to the ear'), (await p.textContent('h1')) === 'Ear');
     const stored = await p.evaluate(() => JM.storage.getLook());
-    check(T('Start again clears the look'), Object.keys(stored).length === 0, JSON.stringify(stored));
+    check(T('Start a new look clears the look'), Object.keys(stored).length === 0, JSON.stringify(stored));
 
     // ---------- with a quiz result ----------
     await p.goto(BASE + 'match.html#edit-ankle-delicate-emerald-romantic'); await p.waitForTimeout(250);

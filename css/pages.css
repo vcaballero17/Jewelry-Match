@@ -353,3 +353,15 @@
 .look-flow__score { font-weight: 700; font-size: .8125rem; letter-spacing: .04em; text-transform: uppercase; }
 .look__start { margin-top: 1.25rem; }
 .results-next { display: grid; gap: .75rem; justify-items: start; margin-top: 2.5rem; padding: 1.25rem; border: 1px solid var(--black); }
+
+/* The look as ONE LINE of pieces, side by side. On a phone the line
+   scrolls sideways inside its own box; the page itself never does. */
+.look--row {
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(11rem, 14rem);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding-bottom: .5rem;
+}
+.look--row > .look__slot { scroll-snap-align: start; }

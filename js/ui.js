@@ -145,6 +145,54 @@
     ]);
   };
 
+  /* A "send this link" block: a read-only field, a Copy button and,
+     on phones, the built-in share sheet. Used by the quiz and the look.
+     o = { heading, summary, text, url, label, shareTitle, shareText } */
+  ui.shareBlock = function (o) {
+    var input = ui.el('input', {
+      type: 'text', class: 'share__input', id: 'share-link', value: o.url, readonly: true,
+      onfocus: function () { input.select(); }
+    });
+    var status = ui.el('p', { class: 'hint', id: 'share-status', role: 'status' });
+
+    function done(message) { status.textContent = message; status.className = 'hint'; }
+    function fallback() {
+      // Older browsers or a blocked clipboard: select the text so the person can copy it.
+      input.focus();
+      input.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+      done(ok ? 'Link copied.' : 'Link selected. Press Ctrl+C (Cmd+C on a Mac) to copy it.');
+    }
+    function copy() {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(o.url).then(function () { done('Link copied.'); }, fallback);
+      } else {
+        fallback();
+      }
+    }
+
+    var buttons = [ui.el('button', { type: 'button', class: 'btn', id: 'copy-link', onclick: copy }, ['Copy link'])];
+    if (navigator.share) {
+      buttons.push(ui.el('button', { type: 'button', class: 'btn btn--ghost', id: 'share-native', onclick: function () {
+        navigator.share({ title: o.shareTitle, text: o.shareText, url: o.url })
+          .catch(function () { /* the person closed the share sheet: nothing to do */ });
+      } }, ['Share\u2026']));
+    }
+
+    return ui.el('section', { class: 'share', 'aria-labelledby': 'share-heading' }, [
+      ui.el('h2', { class: 'section-title', id: 'share-heading', text: o.heading }),
+      o.summary ? ui.el('p', { class: 'share__summary', text: o.summary }) : null,
+      ui.el('p', { class: 'share__text', text: o.text }),
+      ui.el('div', { class: 'share__row' }, [
+        ui.el('label', { class: 'vh', for: 'share-link', text: o.label || 'Link to share' }),
+        input
+      ]),
+      ui.el('div', { class: 'share__buttons' }, buttons),
+      status
+    ]);
+  };
+
   ui.updateFavCount = function () {
     var count = JM.storage.getFavorites().length;
     var text = count < 10 ? '0' + count : String(count);

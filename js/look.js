@@ -16,8 +16,8 @@
   var titleEl = document.getElementById('step-title');
   var progressEl = document.getElementById('progress');
 
-  // Body order, top to bottom. Same order as the "Your Edit" page.
-  var PLACES = ['ear', 'neckline', 'across-hand', 'little-finger', 'ankle'];
+  // Body order, top to bottom (one list for the whole site, in match.js).
+  var PLACES = JM.LOOK_PLACES;
 
   var last = JM.storage.getLastMatch();          // null if the quiz was never taken
   var answers = last ? last.answers : null;
@@ -154,7 +154,28 @@
     ]));
   }
 
-  /* ----- The last screen: the whole look ----- */
+  /* ----- A picture, a name and a link to the piece's story ----- */
+  function pieceLink(item) {
+    return el('a', { class: 'card__link', href: 'object.html?id=' + encodeURIComponent(item.id) + '#' + encodeURIComponent(item.id) }, [
+      JM.ui.media(item),
+      el('span', { class: 'meta', text: item.catalogNo }),
+      el('span', { class: 'card__name', text: item.name })
+    ]);
+  }
+
+  /* The link that carries the chosen pieces (see JM.encodeLook in match.js). */
+  function lookUrl(code) {
+    return window.location.href.split('#')[0].split('?')[0] + '#' + code;
+  }
+
+  function lookSummary(look) {
+    return PLACES
+      .filter(function (place) { return look[place] && look[place] !== 'none'; })
+      .map(function (place) { return findItem(look[place]).name; })
+      .join(' \u00b7 ');
+  }
+
+  /* ----- The last screen: your decision, ready to send ----- */
   function renderDone() {
     titleEl.textContent = 'Your look';
     var look = JM.storage.getLook();
@@ -166,43 +187,110 @@
       if (item) filled++;
 
       var parts = [el('h3', { class: 'look__place', text: label })];
-      if (item) {
-        parts.push(el('a', { class: 'card__link', href: 'object.html?id=' + encodeURIComponent(item.id) + '#' + encodeURIComponent(item.id) }, [
-          JM.ui.media(item),
-          el('span', { class: 'meta', text: item.catalogNo }),
-          el('span', { class: 'card__name', text: item.name })
-        ]));
-      } else {
-        parts.push(el('p', { class: 'look__empty', text: look[place] === 'none' ? 'Skipped.' : 'Not chosen yet.' }));
-      }
+      parts.push(item ? pieceLink(item) : el('p', { class: 'look__empty', text: look[place] === 'none' ? 'Skipped.' : 'Not chosen yet.' }));
       parts.push(el('button', { type: 'button', class: 'btn btn--ghost btn--small', onclick: function () { go(step); } }, [
         item ? 'Change' : 'Choose', el('span', { class: 'vh', text: ' ' + label.toLowerCase() })
       ]));
       return el('li', { class: 'look__slot' }, parts);
     });
 
+    root.appendChild(el('p', { class: 'page-intro', text: 'This is your decision. These are the pieces you chose, one for each place. Send them to your friends, or change anything first.' }));
     root.appendChild(el('p', { class: 'look__count', role: 'status' }, [
       el('strong', { text: filled + ' of ' + PLACES.length }),
       ' places filled. Every piece you chose is also saved in Your Edit.'
     ]));
-    root.appendChild(el('ul', { class: 'look' }, slots));
+    root.appendChild(el('ul', { class: 'look look--row' }, slots));
+
+    var code = JM.encodeLook(look);
+    if (code) {
+      root.appendChild(JM.ui.shareBlock({
+        heading: 'Send your look',
+        summary: lookSummary(look),
+        text: 'Anyone with this link sees the pieces you chose, side by side. Nothing is stored on a server; your choices travel inside the link.',
+        url: lookUrl(code),
+        label: 'Link to your look',
+        shareTitle: 'My Jewelry Match look',
+        shareText: 'The pieces I chose: ' + lookSummary(look) + '. Take a look:'
+      }));
+    } else {
+      root.appendChild(el('div', { class: 'notice' }, [
+        el('h2', { text: 'Nothing to send yet' }),
+        el('p', { text: 'You skipped every place. Choose at least one piece, then you can send your look.' }),
+        el('div', { class: 'empty-actions' }, [
+          el('button', { type: 'button', class: 'btn', onclick: function () { go(0); } }, ['Choose a piece'])
+        ])
+      ]));
+    }
+
     root.appendChild(el('div', { class: 'step-actions' }, [
-      el('a', { class: 'btn', href: 'saved.html' }, ['See it in Your Edit']),
-      el('a', { class: 'btn btn--ghost', href: 'match.html' }, [answers ? 'Find another match' : 'Find your match']),
+      el('a', { class: 'btn btn--ghost', href: 'saved.html' }, ['See it in Your Edit']),
       el('button', { type: 'button', class: 'btn btn--ghost', onclick: function () {
         PLACES.forEach(function (place) { JM.storage.setLook(place, null); });
-        JM.ui.announce('Look cleared. Starting again.');
+        JM.ui.announce('Look cleared. Starting a new look.');
         go(0);
-      } }, ['Start again'])
+      } }, ['Start a new look'])
     ]));
+  }
+
+  /* ----- A friend opened a look link: show what was chosen, in a line.
+         Nothing is saved on this visitor's device. ----- */
+  function renderShared(look) {
+    var mine = function () { window.location.hash = 'ear'; };     // leave the shared view, start your own
+
+    progressEl.textContent = '';
+    if (!look) {
+      titleEl.textContent = 'This link does not work';
+      root.appendChild(el('div', { class: 'notice', role: 'alert' }, [
+        el('h2', { text: 'We could not read this look' }),
+        el('p', { text: 'The link may have been cut short when it was copied. Ask your friend to send it again, or build a look of your own.' }),
+        el('div', { class: 'empty-actions' }, [
+          el('button', { type: 'button', class: 'btn', onclick: mine }, ['Build my own look'])
+        ])
+      ]));
+      return;
+    }
+
+    titleEl.textContent = 'A friend\u2019s look';
+    progressEl.appendChild(el('span', { class: 'progress__text', text: 'Shared with you' }));
+
+    var slots = PLACES
+      .filter(function (place) { return look[place] !== 'none'; })
+      .map(function (place) {
+        return el('li', { class: 'look__slot' }, [
+          el('h3', { class: 'look__place', text: JM.labelOf('placement', place) }),
+          pieceLink(findItem(look[place]))
+        ]);
+      });
+
+    root.appendChild(el('p', { class: 'page-intro shared-note', text: 'A friend sent you their look. These are the pieces they chose, one for each place they wanted to dress.' }));
+    root.appendChild(el('ul', { class: 'look look--row' }, slots));
+    root.appendChild(el('div', { class: 'step-actions' }, [
+      el('button', { type: 'button', class: 'btn', onclick: mine }, ['Build my own look']),
+      el('a', { class: 'btn btn--ghost', href: 'match.html' }, ['Find my match'])
+    ]));
+    root.appendChild(JM.ui.shareBlock({
+      heading: 'Send this look on',
+      summary: lookSummary(look),
+      text: 'Anyone with this link sees these same pieces. Nothing is stored on a server.',
+      url: window.location.href.split('?')[0],
+      label: 'Link to this look',
+      shareTitle: 'A Jewelry Match look',
+      shareText: 'The pieces a friend chose: ' + lookSummary(look) + '. Take a look:'
+    }));
   }
 
   /* ----- Draw the screen the address asks for ----- */
   function render(moveFocus) {
-    var step = currentStep();
     root.textContent = '';
-    renderProgress(step);
-    if (step >= PLACES.length) renderDone(); else renderPlace(step);
+    var hash = window.location.hash.replace('#', '').toLowerCase();
+
+    if (hash.indexOf(JM.LOOK_PREFIX) === 0) {
+      renderShared(JM.decodeLook(hash));              // a friend's link (null if it is broken)
+    } else {
+      var step = currentStep();
+      renderProgress(step);
+      if (step >= PLACES.length) renderDone(); else renderPlace(step);
+    }
     if (moveFocus) titleEl.focus();     // tell screen readers a new screen has started
   }
 

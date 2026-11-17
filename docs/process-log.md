@@ -120,7 +120,7 @@ tests/  tools/  docs/
 ## Stage 11: README and tests shipped
 
 - `README.md` explains the project; `tests/browser/` now holds all six browser test files (they find the site folder by themselves).
-- **Test totals now:** 30 unit tests, seven browser suites, 150 links checked.
+- **Test totals now:** 35 unit tests, eight browser suites, 150 links checked.
 
 ## Stage 12: Fixing empty filters (feedback from testing the live site)
 
@@ -139,6 +139,16 @@ tests/  tools/  docs/
 - **Choosing also saves:** a chosen piece is added to Your Edit, so you never have to save it separately. "Skip" is stored as `'none'`, so Your Edit knows it was skipped on purpose.
 - **Accessibility:** Continue uses `aria-disabled` and explains itself if pressed with nothing chosen. Focus moves to the heading on each new screen. The progress is words plus segments.
 - **Say:** "I replaced scattered pages with one guided path. The URL stores where you are, so there is no hidden state."
+
+## Stage 14: One continuous journey that ends in sharing (feedback: "it makes me go back")
+
+- **The problem:** the journey had two endings (a share box on the quiz results, and the look screen), and the look screen's buttons sent people back to the start. It felt like going round in circles.
+- **The fix, one path:** quiz -> results -> **Continue** -> ear -> neckline -> hand -> little finger -> ankle -> **Your look**. The share link appears only on that last screen, with the message "This is your decision". The results page no longer shows a share box. It only offers Continue. "Find another match" was removed from the end; "Start a new look" is a small secondary button.
+- **The share link for a look** (`JM.encodeLook` / `JM.decodeLook` in `js/match.js`): `look.html#look-006-009-000-001-010`. Five 3-digit catalog numbers in body order, `000` = skipped. No server: the choices travel inside the link.
+- **Never trust the link:** `decodeLook` checks that every number is a real piece AND belongs to its place (Kite Pinky in the "ear" slot is rejected). Anything wrong returns `null`, and the page shows "This link does not work" with a button to build your own look. Unit tests try all 431 possible looks plus 14 broken links.
+- **What a friend sees:** "A friend's look": only the pieces chosen, **side by side in one line**, with a way to build their own look. Nothing is saved on the friend's device. On phones the line scrolls sideways inside its own box (CSS `grid-auto-flow: column` + `overflow-x: auto`), while the page itself never scrolls sideways.
+- **Code tidy-up:** the share box (field + Copy + phone share sheet) is now one reusable function, `JM.ui.shareBlock`, used by both the quiz (old-style links keep working) and the look.
+- **Say:** "I made the journey linear and put the one action that matters, sharing, at the end, and I validated the link on the receiving side."
 
 ---
 

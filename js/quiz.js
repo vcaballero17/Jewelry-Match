@@ -452,13 +452,17 @@
       el('h2', { id: 'results-heading', class: 'vh', text: state.shared ? 'Their four matches' : 'Your four matches' }),
       grid
     ]));
-    if (!state.shared) {
+    if (state.shared) {
+      // A friend's old-style link: they may pass it on.
+      root.appendChild(buildShare());
+    } else {
+      // Your own results are a step on the way, not the end: the journey
+      // finishes on the look screen, where the one link to share lives.
       root.appendChild(el('div', { class: 'results-next' }, [
-        el('p', { text: 'Next: choose one piece for each place on the body.' }),
+        el('p', { text: 'Next: choose one piece for each place on the body. At the end you can send your look to friends.' }),
         el('a', { class: 'btn', href: 'look.html#ear' }, ['Continue: build your look \u2192'])
       ]));
     }
-    root.appendChild(buildShare());
   }
 
   /* ---------- Sharing ----------
@@ -473,62 +477,16 @@
     return JM.DIMENSIONS.map(function (dim) { return labelOf(dim, state.answers[dim]); }).join(' \u00B7 ');
   }
 
-  function copyLink(input, status, url) {
-    function done(message) { status.textContent = message; status.className = 'hint'; }
-    function fallback() {
-      // Older browsers or blocked clipboard: select the text so the person can copy it.
-      input.focus();
-      input.select();
-      var ok = false;
-      try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
-      done(ok ? 'Link copied.' : 'Link selected. Press Ctrl+C (Cmd+C on a Mac) to copy it.');
-    }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(url).then(function () { done('Link copied.'); }, fallback);
-    } else {
-      fallback();
-    }
-  }
-
   function buildShare() {
-    var url = shareUrl();
-
-    var input = el('input', {
-      type: 'text',
-      class: 'share__input',
-      id: 'share-link',
-      value: url,
-      readonly: true,
-      onfocus: function () { input.select(); }
+    return JM.ui.shareBlock({
+      heading: state.shared ? 'Send this edit on' : 'Send your edit',
+      summary: shareSummary(),
+      text: 'Anyone with this link sees these four matches and what was chosen. Nothing is stored on a server; the choices travel inside the link.',
+      url: shareUrl(),
+      label: 'Link to this edit',
+      shareTitle: 'My Jewelry Match edit',
+      shareText: 'My edit: ' + shareSummary() + '. See the four pieces that match:'
     });
-    var status = el('p', { class: 'hint', id: 'share-status', role: 'status' });
-
-    var buttons = [
-      el('button', { type: 'button', class: 'btn', id: 'copy-link', onclick: function () { copyLink(input, status, url); } }, ['Copy link'])
-    ];
-
-    // Phones and some browsers have a built-in share sheet (Messages, WhatsApp...).
-    if (navigator.share) {
-      buttons.push(el('button', { type: 'button', class: 'btn btn--ghost', id: 'share-native', onclick: function () {
-        navigator.share({
-          title: 'My Jewelry Match edit',
-          text: 'My edit: ' + shareSummary() + '. See the four pieces that match:',
-          url: url
-        }).catch(function () { /* the person closed the share sheet: nothing to do */ });
-      } }, ['Share\u2026']));
-    }
-
-    return el('section', { class: 'share', 'aria-labelledby': 'share-heading' }, [
-      el('h2', { class: 'section-title', id: 'share-heading', text: state.shared ? 'Send this edit on' : 'Send your edit' }),
-      el('p', { class: 'share__summary', text: shareSummary() }),
-      el('p', { class: 'share__text', text: 'Anyone with this link sees these four matches and what was chosen. Nothing is stored on a server; the choices travel inside the link.' }),
-      el('div', { class: 'share__row' }, [
-        el('label', { class: 'vh', for: 'share-link', text: 'Link to this edit' }),
-        input
-      ]),
-      el('div', { class: 'share__buttons' }, buttons),
-      status
-    ]);
   }
 
   /* ---------- Leaving a shared edit to take your own quiz ---------- */

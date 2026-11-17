@@ -28,22 +28,13 @@ const answer = async (page, p, f, m, d) => {
   await sender.goto(BASE + 'match.html');
   await answer(sender, 'ear', 'liquid', 'silver', 'quiet');
   check('results shown', (await sender.textContent('h1')) === 'Your edit');
-  check('share section has its own heading', (await sender.textContent('#share-heading')) === 'Send your edit');
-  const link = await sender.inputValue('#share-link');
-  check('link ends with #edit-ear-liquid-silver-quiet', link.endsWith('#edit-ear-liquid-silver-quiet'), link);
-  check('link field has an accessible label', (await sender.locator('label[for=share-link]').count()) === 1);
-  check('summary line is readable', (await sender.textContent('.share__summary')) === 'Ear · Liquid · Silver · Quiet');
+  check('own results do NOT have a share block (the journey ends on the look screen)', (await sender.locator('#share-link').count()) === 0);
+  check('own results offer Continue instead', (await sender.locator('a.btn:has-text("Continue: build your look")').count()) === 1);
+  // Old-style links (#edit-...) must keep working for anyone who already has one:
+  const link = await sender.evaluate(() => location.href.split('#')[0] + '#' + JM.encodeShare({ placement: 'ear', form: 'liquid', material: 'silver', mood: 'quiet' }));
+  check('old-style link ends with #edit-ear-liquid-silver-quiet', link.endsWith('#edit-ear-liquid-silver-quiet'), link);
   const senderNames = await sender.locator('article.result .result__name').allTextContents();
   const senderScores = await sender.locator('article.result .result__score').allTextContents();
-
-  await sender.focus('#copy-link'); await sender.keyboard.press('Enter');
-  await sender.waitForFunction(() => document.getElementById('share-status').textContent.length > 0, null, { timeout: 3000 }).catch(() => {});
-  const status = await sender.textContent('#share-status');
-  check('Copy link by keyboard gives feedback', /copied|selected/i.test(status), status);
-  const clip = await sender.evaluate(() => navigator.clipboard.readText().catch(() => null));
-  console.log('        (clipboard read: ' + (clip === null ? 'not permitted in this test browser' : clip === link ? 'matches the link' : 'DIFFERENT') + ')');
-  check('clipboard, when readable, holds the exact link', clip === null || clip === link);
-  await sender.screenshot({ path: OUT + '/share-sender.png', fullPage: true });
 
   console.log('\nFriend opens the link (separate browser profile)');
   const friendCtx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
@@ -77,7 +68,7 @@ const answer = async (page, p, f, m, d) => {
   check('focus moved to the heading', (await friend.evaluate(() => document.activeElement.id)) === 'step-title');
   await answer(friend, 'ankle', 'delicate', 'emerald', 'romantic');
   check('own results shown as "Your edit"', (await friend.textContent('h1')) === 'Your edit');
-  check('own share link has the friend\'s answers', (await friend.inputValue('#share-link')).endsWith('#edit-ankle-delicate-emerald-romantic'));
+  check('own results offer Continue (no share block mid-journey)', (await friend.locator('#share-link').count()) === 0 && (await friend.locator('a.btn:has-text("Continue: build your look")').count()) === 1);
   check('own result now stored', (await friend.evaluate(() => localStorage.getItem('jm:lastMatch:v1'))) !== null);
 
   console.log('\nA shared link must not overwrite someone\'s own saved result');

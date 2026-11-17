@@ -218,6 +218,54 @@ JM.decodeShare = function (text) {
   return JM.validateAnswers(answers).valid ? answers : null;
 };
 
+/* ----------------------------------------------------------
+   Sharing a LOOK (one piece per place on the body)
+   ----------------------------------------------------------
+   The link carries the catalog numbers of the chosen pieces, always in
+   body order: look.html#look-006-009-000-001-010
+   (ear, neckline, across the hand, little finger, ankle; 000 = skipped).
+   The page that opens the link checks that every number is a real piece
+   AND that it belongs to its place. Anything else returns null.
+   ---------------------------------------------------------- */
+JM.LOOK_PLACES = ['ear', 'neckline', 'across-hand', 'little-finger', 'ankle'];
+JM.LOOK_PREFIX = 'look-';
+
+// look = { ear: 'drop-study', neckline: 'none', ... }  ->  'look-006-000-...'  (or null if nothing is chosen)
+JM.encodeLook = function (look) {
+  var any = false;
+  var groups = JM.LOOK_PLACES.map(function (place) {
+    var item = JM.jewelry.filter(function (j) { return j.id === (look || {})[place]; })[0];
+    if (item && item.placement === place) {
+      any = true;
+      return item.catalogNo.replace('JM-', '');
+    }
+    return '000';
+  });
+  return any ? JM.LOOK_PREFIX + groups.join('-') : null;
+};
+
+// 'look-006-000-...'  ->  { ear: 'drop-study', neckline: 'none', ... }  (or null if anything is wrong)
+JM.decodeLook = function (text) {
+  var t = String(text || '').replace(/^#/, '').toLowerCase();
+  if (t.indexOf(JM.LOOK_PREFIX) !== 0) return null;
+
+  var parts = t.slice(JM.LOOK_PREFIX.length).split('-');
+  if (parts.length !== JM.LOOK_PLACES.length) return null;
+
+  var look = {};
+  var chosen = 0;
+  for (var i = 0; i < parts.length; i++) {
+    var place = JM.LOOK_PLACES[i];
+    if (!/^\d{3}$/.test(parts[i])) return null;
+    if (parts[i] === '000') { look[place] = 'none'; continue; }
+    var item = JM.jewelry.filter(function (j) { return j.catalogNo === 'JM-' + parts[i]; })[0];
+    if (!item || item.placement !== place) return null;       // unknown piece, or the wrong place
+    look[place] = item.id;
+    chosen++;
+  }
+  return chosen > 0 ? look : null;
+};
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = JM;
 }

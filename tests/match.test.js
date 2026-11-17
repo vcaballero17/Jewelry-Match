@@ -284,6 +284,59 @@ test('JM-SH04: a decoded link gives the same ranking as the original answers', f
   assert.deepStrictEqual(ids(JM.decodeShare(JM.encodeShare(a))), ids(a));
 });
 
+/* ----- Look links (spec extension): share the chosen pieces ----- */
+test('look link: every combination of one piece per place (or skipped) round-trips', function () {
+  var options = JM.LOOK_PLACES.map(function (place) {
+    return JM.jewelry.filter(function (j) { return j.placement === place; }).map(function (j) { return j.id; }).concat('none');
+  });
+  var count = 0;
+  (function walk(i, look) {
+    if (i === options.length) {
+      var code = JM.encodeLook(look);
+      var allSkipped = JM.LOOK_PLACES.every(function (p) { return look[p] === 'none'; });
+      if (allSkipped) { assert.strictEqual(code, null); return; }
+      assert.deepStrictEqual(JM.decodeLook(code), look);
+      count++;
+      return;
+    }
+    options[i].forEach(function (id) {
+      var next = Object.assign({}, look); next[JM.LOOK_PLACES[i]] = id;
+      walk(i + 1, next);
+    });
+  })(0, {});
+  assert.strictEqual(count, 431);          // 3*4*4*3*3 = 432 combinations, minus "everything skipped"
+});
+
+test('look link: format is look- plus five 3-digit numbers in body order', function () {
+  var code = JM.encodeLook({ ear: 'drop-study', neckline: 'melt-collar', 'across-hand': 'none', 'little-finger': 'kite-pinky', ankle: 'green-thread' });
+  assert.strictEqual(code, 'look-006-009-000-001-010');
+});
+
+test('look link: accepts a leading # and capital letters', function () {
+  assert.ok(JM.decodeLook('#LOOK-006-009-000-001-010'));
+});
+
+test('look link: bad links return null (never guess)', function () {
+  [
+    '', null, undefined, 'edit-ear-liquid-silver-quiet',
+    'look-', 'look-006-009-000-001', 'look-006-009-000-001-010-011',
+    'look-abc-009-000-001-010', 'look-6-9-0-1-10', 'look-006-009-000-001-999',
+    'look-000-000-000-000-000',                     // nothing chosen
+    'look-001-000-000-000-000',                     // Kite Pinky is not an ear piece
+    'look-006-009-000-001-001',                     // Kite Pinky is not an ankle piece
+    'look-006-009-000-001-010<script>'
+  ].forEach(function (bad) {
+    assert.strictEqual(JM.decodeLook(bad), null, 'should reject: ' + bad);
+  });
+});
+
+test('look link: a skipped place decodes to "none" and encodeLook ignores wrong-place pieces', function () {
+  var look = JM.decodeLook('look-006-000-000-000-000');
+  assert.strictEqual(look.ear, 'drop-study');
+  assert.strictEqual(look.neckline, 'none');
+  assert.strictEqual(JM.encodeLook({ ear: 'kite-pinky', neckline: 'melt-collar' }), 'look-000-009-000-000-000');
+});
+
 console.log('\n' + passed + ' tests passed' + (process.exitCode ? ' (some FAILED)' : '') + '\n');
 
 /* ----------------------------------------------------------
