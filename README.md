@@ -2,7 +2,7 @@
 
 An experimental jewelry archive that starts with the body: choose where a piece should live, then form, material and mood, and get four explainable matches from a collection of twelve.
 
-**Live site:** https://YOUR-USERNAME.github.io/jewelry-match/  *(replace after deploying)*
+**Live site:** https://vcaballero17.github.io/jewelry-match/ 
 
 ## What it does
 
