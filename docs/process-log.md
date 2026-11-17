@@ -120,7 +120,7 @@ tests/  tools/  docs/
 ## Stage 11: README and tests shipped
 
 - `README.md` explains the project; `tests/browser/` now holds all six browser test files (they find the site folder by themselves).
-- **Test totals now:** 35 unit tests, eight browser suites, 150 links checked.
+- **Test totals now:** 35 unit tests, nine browser suites, 150 links checked.
 
 ## Stage 12: Fixing empty filters (feedback from testing the live site)
 
@@ -150,6 +150,16 @@ tests/  tools/  docs/
 - **Code tidy-up:** the share box (field + Copy + phone share sheet) is now one reusable function, `JM.ui.shareBlock`, used by both the quiz (old-style links keep working) and the look.
 - **Bug found by testing it myself, then fixed:** "Build my own look" in a friend's view opened the screens with *your own earlier choices* already filled in, so it felt like an unfinished page. Both "Build my own look" and "Start a new look" now call one function, `startFresh()` in `js/look.js`: it clears the earlier look choices (saved pieces stay saved) and opens the ear screen empty. One shared function means the two buttons can never behave differently.
 - **Say:** "I made the journey linear and put the one action that matters, sharing, at the end, and I validated the link on the receiving side."
+
+## Stage 15: Sharing just one part of the body (feedback: "I only want to send the necklace")
+
+- **The question:** can someone choose one place only, without building a full look? **Yes.** The link format from Stage 14 already allowed it (the other places are `000`). What was missing was a *fast way to get there*. These are optional shortcuts that leave the normal path unchanged.
+- **Shortcut 1: "Send this piece"** (`js/object.js`). Every piece page has a share block. For Melt Collar the link is `look.html#look-000-009-000-000-000`. It reuses `JM.encodeLook` and `JM.ui.shareBlock`, so there is no new link format and no new code to trust.
+- **Shortcut 2: "Finish now"** (`js/look.js`, `onFinishNow`). On every place screen (except the last, where "Finish" does the same thing). It keeps the piece selected on this screen, then jumps to the send screen. If nothing is chosen at all it explains why and stays put.
+- **Shortcut 3: start where you are interested.** The quiz's Continue button now points to `look.html#<the place you chose>` (for example `#neckline`). Someone who picked a necklace in the quiz begins at the necklace, not the ear.
+- **A friend's view adapts:** one piece reads "A friend's pick" / "A friend sent you a piece they like" / "Send this piece on". Several pieces read "A friend's look".
+- **Why this isn't confusing:** the default journey is identical. Every shortcut is an extra button, and each one ends on the same send screen.
+- **Say:** "I let people share one piece or a whole look with the same link format, so there is only one thing to validate and one thing to explain."
 
 ---
 

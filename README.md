@@ -8,8 +8,8 @@ An experimental jewelry archive that starts with the body: choose where a piece 
 
 - **Find your match:** a four-step quiz (Body Map, Form, Material, Mood). Each result shows a percentage and a score breakdown bar for every choice.
 - **The Edit:** all twelve pieces. Filters show how many pieces each option leaves and switch off impossible ones; if nothing matches exactly, the closest pieces are shown. Compare mode puts up to three pieces side by side.
-- **Object pages:** one story page per piece, with styling notes and related pieces.
-- **Build your look:** a guided walk-through (ear, neckline, hand, little finger, ankle) with Continue, Back and Skip. It ends on one screen with your complete look and a link to send to friends.
+- **Object pages:** one story page per piece, with styling notes, related pieces and a *Send this piece* link, so you can share just one thing.
+- **Build your look:** a guided walk-through (ear, neckline, hand, little finger, ankle) with Continue, Back and Skip. You can fill all five places or press *Finish now* after any of them. It ends on one screen with your choice and a link to send to friends.
 - **Your Edit:** saved pieces, your latest match and your look.
 - **Share:** the pieces you chose travel inside the link (`look.html#look-006-009-000-001-010`). A friend who opens it sees your pieces side by side, and nothing is stored on a server. Old quiz links (`match.html#edit-...`) still work.
 

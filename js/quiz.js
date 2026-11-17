@@ -459,8 +459,8 @@
       // Your own results are a step on the way, not the end: the journey
       // finishes on the look screen, where the one link to share lives.
       root.appendChild(el('div', { class: 'results-next' }, [
-        el('p', { text: 'Next: choose one piece for each place on the body. At the end you can send your look to friends.' }),
-        el('a', { class: 'btn', href: 'look.html#ear' }, ['Continue: build your look \u2192'])
+        el('p', { text: 'Next: pick your pieces, starting with the ' + labelOf('placement', state.answers.placement).toLowerCase() + '. Do one place or all five, then send your choice to friends.' }),
+        el('a', { class: 'btn', href: 'look.html#' + state.answers.placement }, ['Continue: build your look \u2192'])
       ]));
     }
   }

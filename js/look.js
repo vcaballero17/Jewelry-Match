@@ -117,6 +117,15 @@
       ]);
     });
 
+    // Remember the selected piece (and save it to Your Edit too).
+    function commit() {
+      var item = findItem(selected);
+      JM.storage.setLook(place, selected);
+      if (!JM.storage.isFavorite(selected)) JM.storage.toggleFavorite(selected);
+      JM.ui.updateFavCount();
+      JM.ui.announce(item.name + ' added to your look.');
+    }
+
     function onContinue() {
       if (!selected) {
         hint.textContent = 'Choose a piece, or skip this place.';
@@ -124,12 +133,23 @@
         JM.ui.announce('Choose a piece, or skip this place.');
         return;
       }
-      var item = findItem(selected);
-      JM.storage.setLook(place, selected);
-      if (!JM.storage.isFavorite(selected)) JM.storage.toggleFavorite(selected);   // chosen pieces live in Your Edit too
-      JM.ui.updateFavCount();
-      JM.ui.announce(item.name + ' added to your look.');
+      commit();
       go(step + 1);
+    }
+
+    // "Finish now": you do not have to fill every place. Keep what is chosen
+    // (including the piece selected on this screen) and jump to the send screen.
+    function onFinishNow() {
+      if (selected) commit();
+      var look = JM.storage.getLook();
+      var any = PLACES.some(function (p) { return look[p] && look[p] !== 'none'; });
+      if (!any) {
+        hint.textContent = 'Choose at least one piece first, then you can finish.';
+        hint.className = 'hint hint--alert';
+        JM.ui.announce('Choose at least one piece first.');
+        return;
+      }
+      go(PLACES.length);
     }
 
     function onSkip() {
@@ -150,7 +170,7 @@
 
     root.appendChild(el('p', { class: 'page-intro', text:
       (answers ? 'Pieces are ordered by how well they match your answers. ' : '') +
-      'Choose the one you would wear here, or skip this place.' }));
+      'Choose the one you would wear here, or skip this place. You can also finish at any time with just what you have chosen.' }));
     root.appendChild(el('fieldset', { class: 'look-flow__fieldset' }, [
       el('legend', { class: 'vh', text: 'Choose a piece for ' + label.toLowerCase() }),
       el('div', { class: 'choices' }, options)
@@ -159,6 +179,10 @@
       back,
       el('button', { type: 'button', class: 'btn btn--ghost', onclick: onSkip }, ['Skip this place']),
       continueBtn,
+      // Not on the last place: there, "Finish" already does the same thing.
+      step < PLACES.length - 1
+        ? el('button', { type: 'button', class: 'btn btn--ghost', id: 'finish-now', onclick: onFinishNow }, ['Finish now'])
+        : null,
       hint
     ]));
   }
@@ -255,7 +279,8 @@
       return;
     }
 
-    titleEl.textContent = 'A friend\u2019s look';
+    var count = PLACES.filter(function (place) { return look[place] !== 'none'; }).length;
+    titleEl.textContent = count === 1 ? 'A friend\u2019s pick' : 'A friend\u2019s look';
     progressEl.appendChild(el('span', { class: 'progress__text', text: 'Shared with you' }));
 
     var slots = PLACES
@@ -267,16 +292,20 @@
         ]);
       });
 
-    root.appendChild(el('p', { class: 'page-intro shared-note', text: 'A friend sent you their look. These are the pieces they chose, one for each place they wanted to dress.' }));
+    root.appendChild(el('p', { class: 'page-intro shared-note', text: count === 1
+      ? 'A friend sent you a piece they like.'
+      : 'A friend sent you their look. These are the pieces they chose, one for each place they wanted to dress.' }));
     root.appendChild(el('ul', { class: 'look look--row' }, slots));
     root.appendChild(el('div', { class: 'step-actions' }, [
       el('button', { type: 'button', class: 'btn', onclick: mine }, ['Build my own look']),
       el('a', { class: 'btn btn--ghost', href: 'match.html' }, ['Find my match'])
     ]));
     root.appendChild(JM.ui.shareBlock({
-      heading: 'Send this look on',
+      heading: count === 1 ? 'Send this piece on' : 'Send this look on',
       summary: lookSummary(look),
-      text: 'Anyone with this link sees these same pieces. Nothing is stored on a server.',
+      text: count === 1
+        ? 'Anyone with this link sees this same piece. Nothing is stored on a server.'
+        : 'Anyone with this link sees these same pieces. Nothing is stored on a server.',
       url: window.location.href.split('?')[0],
       label: 'Link to this look',
       shareTitle: 'A Jewelry Match look',

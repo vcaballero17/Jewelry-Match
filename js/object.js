@@ -88,6 +88,20 @@
     ]));
   }
 
+  // Send just this one piece. It uses the same link format as a full look
+  // (look.html#look-000-007-000-000-000), with every other place left empty.
+  var single = {};
+  single[item.placement] = item.id;
+  sections.push(JM.ui.shareBlock({
+    heading: 'Send this piece',
+    summary: item.name,
+    text: 'Anyone with this link sees just this piece. Nothing is stored on a server.',
+    url: new URL('look.html', window.location.href).href + '#' + JM.encodeLook(single),
+    label: 'Link to this piece',
+    shareTitle: item.name + ' \u2014 Jewelry Match',
+    shareText: 'A piece I like: ' + item.name + '.'
+  }));
+
   var related = (item.relatedIds || []).map(findItem).filter(Boolean).slice(0, 3);
   if (related.length) {
     sections.push(el('section', { 'aria-labelledby': 'pair-heading' }, [
