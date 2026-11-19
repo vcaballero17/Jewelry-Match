@@ -34,6 +34,7 @@ const pick = async (p, name) => { await p.locator('label.choice', { hasText: nam
   check('link carries the four chosen pieces in body order', link.endsWith('#look-006-009-000-001-010'), link);
   check('summary names the pieces', (await s.textContent('.share__summary')) === 'Drop Study · Melt Collar · Kite Pinky · Green Thread');
   check('link field has an accessible label', (await s.locator('label[for=share-link]').count()) === 1);
+  await s.waitForTimeout(700);   // let the fade-in animation finish before measuring positions
   check('the pieces appear in one line', await s.evaluate(() => { const t = [...document.querySelectorAll('.look--row .look__slot')].map(e => Math.round(e.getBoundingClientRect().top)); return t.length === 5 && new Set(t).size === 1; }));
   check('no "go back and repeat" button as the main choice (no Find another match)', (await s.locator('a:text-is("Find another match")').count()) === 0);
   check('"Start a new look" is available but secondary', (await s.locator('button:text-is("Start a new look")').count()) === 1);
@@ -54,6 +55,7 @@ const pick = async (p, name) => { await p.locator('label.choice', { hasText: nam
   const names = await f.locator('.look--row .card__name').allTextContents();
   check('exactly the four chosen pieces, in body order', JSON.stringify(names) === JSON.stringify(['Drop Study', 'Melt Collar', 'Kite Pinky', 'Green Thread']), names.join(','));
   check('the skipped place is not shown', (await f.locator('.look__place', { hasText: 'Across the hand' }).count()) === 0);
+  await f.waitForTimeout(700);
   check('all in one line', await f.evaluate(() => { const t = [...document.querySelectorAll('.look--row .look__slot')].map(e => Math.round(e.getBoundingClientRect().top)); return t.length === 4 && new Set(t).size === 1; }));
   check('photos load', await f.evaluate(async () => { const imgs = [...document.querySelectorAll('.look--row img')]; await Promise.all(imgs.map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; }))); return imgs.length === 4 && imgs.every(i => i.naturalWidth > 0); }));
   check('friend\'s own storage is untouched', await f.evaluate(() => JM.storage.getFavorites().length === 0 && Object.keys(JM.storage.getLook()).length === 0 && localStorage.getItem('jm:lastMatch:v1') === null));

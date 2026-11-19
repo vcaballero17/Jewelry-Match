@@ -188,6 +188,35 @@ tests/  tools/  docs/
 
 ---
 
+## Stage 18: Teacher feedback, phone polish and identity (19 Nov)
+
+- **Feedback from my teacher:** polish the mobile experience, keep everything readable and smooth, push the visual identity, and (nice-to-have) show the complete outfit. The deadline also moved to 23 November.
+- **Phone polish** (`css/pages.css`, `js/look.js`): on the look screens the pieces were one per row, so you scrolled a long way to reach Continue. Now two per row, and the button bar is `position: sticky` at the bottom. `scroll-padding-bottom` stops the bar from covering the item that has keyboard focus.
+- **Identity pass, three small moves, same aesthetic:**
+  1. *Bolder type:* bigger section titles, bold catalogue numbers, larger card names.
+  2. *A little colour, only from my palette:* oxblood for progress and place labels, emerald for the top border of look slots and the match score.
+  3. *Motion:* cards fade up one after another and the home title slides in. All of it sits inside `@media (prefers-reduced-motion: no-preference)`, so people who ask for less motion get none.
+- **Test lesson:** one browser test measured card positions while they were still animating and failed. The site was fine, so I made the test wait for the animation to end.
+- **Inspiration saved** in `docs/inspiration/` with notes and credits (references only, nothing copied).
+- **Say:** "Motion is a nice extra, so I made it optional for people who prefer less movement."
+
+---
+
+## Stage 19: The full outfit view (teacher's nice-to-have)
+
+- **Idea from my teacher:** once the look is ready, show the complete outfit, not only separate cards, so people can picture the result.
+- **What I built** (`buildOutfit` in `js/look.js`, styles at the end of `css/pages.css`): the model photo from the quiz with every chosen piece pulled out on the empty wall beside her. A thin line and a dot show where each one is worn. It appears on the final "Your look" screen and on a friend's link.
+- **How it works, in plain words:**
+  - A box with the photo's exact proportions (`aspect-ratio: 1122 / 1402`) holds everything, so percentages always land on the same spot of the body, on any screen.
+  - Each place has a point on the body (`px`, `py`, the same ones the quiz hotspots use) and a height on the wall (`cy`), spread out so the pieces never overlap.
+  - The lines are an SVG over the photo, with `vector-effect: non-scaling-stroke` so they stay thin when the box stretches.
+  - The pieces are a real list of links, so keyboard and screen-reader users can use them. The photo and lines are decorative (`alt=""`, `aria-hidden`).
+- **Problem and fix:** on a phone the callouts first overlapped by a few pixels. I measured it with a test, then made the thumbnails and text a bit smaller and moved the heights.
+- **Test:** `tests/browser/e2e13.js` checks five pieces and five lines, links, no overlap, nothing outside the photo and no sideways scroll, at 390 px and 1280 px.
+- **Say:** "I reused the body map from the quiz, so the outfit view needed no new image."
+
+---
+
 ## How I test (say this too)
 
 1. **Unit tests** (`node tests/match.test.js`): the scoring and sharing logic.

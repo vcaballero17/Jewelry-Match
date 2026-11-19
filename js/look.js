@@ -205,7 +205,7 @@
       el('legend', { class: 'vh', text: 'Choose a piece for ' + label.toLowerCase() }),
       el('div', { class: 'choices' }, options)
     ]));
-    root.appendChild(el('div', { class: 'step-actions' }, [
+    root.appendChild(el('div', { class: 'step-actions step-actions--sticky' }, [
       back,
       el('button', { type: 'button', class: 'btn btn--ghost', onclick: onSkip }, ['Skip this place']),
       continueBtn,
@@ -238,6 +238,66 @@
       .join(' \u00b7 ');
   }
 
+  /* ----- The whole outfit on one body -----
+     The model photo from the quiz, with each chosen piece pulled out beside her
+     on the empty wall. A thin line joins every piece to the place it is worn.
+     (px, py) = where that place is on the photo, in percent. (cy) = how far
+     down the wall the piece's picture sits, spread out so they never overlap. */
+  var OUTFIT_SPOTS = {
+    'ear':           { px: 36.4, py: 10.6, cy: 2 },
+    'neckline':      { px: 33,   py: 23.5, cy: 21 },
+    'across-hand':   { px: 46,   py: 49,   cy: 40 },
+    'little-finger': { px: 50.5, py: 57.5, cy: 59 },
+    'ankle':         { px: 18.3, py: 92,   cy: 78 }
+  };
+
+  function buildOutfit(look) {
+    var SVG = 'http://www.w3.org/2000/svg';
+    var chosen = PLACES.filter(function (place) { return look[place] && look[place] !== 'none'; });
+    if (!chosen.length || !JM.SHOW_IMAGES || !JM.BODY_MAP_IMAGE) return null;
+
+    var lines = document.createElementNS(SVG, 'svg');
+    lines.setAttribute('class', 'outfit__lines');
+    lines.setAttribute('viewBox', '0 0 100 100');
+    lines.setAttribute('preserveAspectRatio', 'none');
+    lines.setAttribute('aria-hidden', 'true');
+
+    var dots = [], callouts = [];
+    chosen.forEach(function (place) {
+      var spot = OUTFIT_SPOTS[place];
+      var item = findItem(look[place]);
+      var line = document.createElementNS(SVG, 'line');
+      line.setAttribute('x1', spot.px); line.setAttribute('y1', spot.py);
+      line.setAttribute('x2', 62);      line.setAttribute('y2', spot.cy + 6);
+      lines.appendChild(line);
+
+      var dot = el('span', { class: 'outfit__dot', 'aria-hidden': 'true' });
+      dot.style.left = spot.px + '%'; dot.style.top = spot.py + '%';
+      dots.push(dot);
+
+      var callout = el('li', { class: 'outfit__piece' }, [
+        el('a', { class: 'outfit__link', href: 'object.html?id=' + encodeURIComponent(item.id) + '#' + encodeURIComponent(item.id) }, [
+          JM.ui.media(item, 'outfit__img'),
+          el('span', { class: 'outfit__place', text: JM.labelOf('placement', place) }),
+          el('span', { class: 'outfit__name', text: item.name })
+        ])
+      ]);
+      callout.style.top = spot.cy + '%';
+      callouts.push(callout);
+    });
+
+    var figure = el('div', { class: 'outfit__figure' }, [
+      el('img', { class: 'outfit__photo', src: JM.BODY_MAP_IMAGE, alt: '', width: '1122', height: '1402' }),
+      lines
+    ].concat(dots, [el('ul', { class: 'outfit__pieces' }, callouts)]));
+
+    return el('section', { class: 'outfit', 'aria-labelledby': 'outfit-heading' }, [
+      el('h2', { class: 'section-title', id: 'outfit-heading', text: 'The full outfit' }),
+      el('p', { class: 'outfit__intro', text: 'Every piece, on one body. Each line points to where it is worn. Select a piece to read its story.' }),
+      figure
+    ]);
+  }
+
   /* ----- The last screen: your decision, ready to send ----- */
   function renderDone() {
     titleEl.textContent = 'Your look';
@@ -263,6 +323,8 @@
       ' places filled. Every piece you chose is also saved in Your Edit.'
     ]));
     root.appendChild(el('ul', { class: 'look look--row' }, slots));
+    var outfitDone = buildOutfit(look);
+    if (outfitDone) root.appendChild(outfitDone);
 
     var code = JM.encodeLook(look);
     if (code) {
@@ -326,6 +388,8 @@
       ? 'A friend sent you a piece they like.'
       : 'A friend sent you their look. These are the pieces they chose, one for each place they wanted to dress.' }));
     root.appendChild(el('ul', { class: 'look look--row' }, slots));
+    var outfitShared = buildOutfit(look);
+    if (outfitShared) root.appendChild(outfitShared);
     root.appendChild(el('div', { class: 'step-actions' }, [
       el('button', { type: 'button', class: 'btn', onclick: mine }, ['Build my own look']),
       el('a', { class: 'btn btn--ghost', href: 'match.html' }, ['Find my match'])
