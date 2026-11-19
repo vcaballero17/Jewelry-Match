@@ -484,3 +484,54 @@ html:has(.look-flow) { scroll-padding-bottom: 9rem; }   /* keyboard focus is nev
   .outfit__place { font-size: .75rem; }
   .outfit__name { font-size: 1.125rem; }
 }
+
+/* ==========================================================
+   Match profile (quiz results)
+   ========================================================== */
+.profile { margin-top: 1.25rem; padding-block: 1rem; border-block: 3px solid var(--black); }
+.profile__name {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(2rem, 8vw, 5rem);
+  line-height: .9;
+  letter-spacing: -.045em;
+  text-transform: uppercase;
+  color: var(--oxblood);
+  overflow-wrap: anywhere;
+  margin-block: .25rem;
+}
+.profile__line { max-width: 40ch; font-size: 1.125rem; }
+.profile + .answers { margin-top: 1rem; }
+
+/* ==========================================================
+   Home: "Up close", a mosaic of tight crops
+   Tiles are squares; the first one is 2 x 2. Each photo is zoomed in
+   on the jewelry (--fx and --fy are where the piece sits, in percent).
+   ========================================================== */
+.mosaic { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+.mosaic__tile { position: relative; aspect-ratio: 1; min-width: 0; overflow: hidden; border: 1px solid var(--black); background: var(--black); }
+.mosaic__tile--lead { grid-column: 1 / -1; aspect-ratio: 4 / 3; }
+.mosaic__tile a { position: absolute; inset: 0; display: block; }
+.mosaic__tile img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: var(--fx, 50%) var(--fy, 50%);
+  transform: scale(1.6);
+  transform-origin: var(--fx, 50%) var(--fy, 50%);
+}
+.mosaic__tag {
+  position: absolute; left: 0; bottom: 0; max-width: 100%;
+  padding: .35rem .6rem;
+  background: var(--paper); color: var(--black);
+  font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+}
+.mosaic__no { font-family: var(--font-meta); color: var(--oxblood); margin-right: .35em; }
+.mosaic__tile a:focus-visible { outline: 3px solid var(--oxblood); outline-offset: -3px; }
+@media (min-width: 48rem) {
+  .mosaic { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .75rem; }
+  .mosaic__tile--lead { grid-column: span 2; grid-row: span 2; aspect-ratio: 1; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mosaic__tile img { transition: transform 600ms cubic-bezier(.2, .8, .2, 1); }
+  .mosaic__tile a:hover img { transform: scale(1.75); }
+}

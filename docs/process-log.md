@@ -217,6 +217,17 @@ tests/  tools/  docs/
 
 ---
 
+## Stage 20: Stronger identity: photo mosaic and a named match profile
+
+- **Why:** my teacher asked me to push the visual identity. I picked two ideas from a list of options and used my saved inspiration (the tight-crop moodboard) as reference.
+- **"Up close" mosaic on Home** (`index.html`, styles at the end of `css/pages.css`): five tight crops of my own photos in a grid, the first one twice as big. Each crop is the same photo zoomed in on the jewelry: `object-fit: cover` plus `transform: scale(1.6)`, with two custom properties (`--fx`, `--fy`) saying where the piece sits in the photo. A paper-coloured tag with the catalogue number and name keeps the text readable on any photo. Each tile is a link to the piece page. The slow zoom on hover only runs if the person has not asked for reduced motion.
+- **Named match profile** (`JM.profile` in `js/match.js`, shown by `profileBlock` in `js/quiz.js`): the quiz result now has a big title built from the answers, for example "The Quiet Silver" (mood + material), plus a line from the form ("Poured, never made.") and the place ("Worn at the ear."). It also shows on a friend's link. It is a pure function: same answers, same profile, nothing stored, so I could unit-test it: 16 mood and material pairs give 16 different names, and incomplete answers give no profile.
+- **Small bug found by my own tests:** "After dark" printed as "The After dark Gold". I now capitalise every word.
+- **Two test adjustments, not site bugs:** the link checker flagged links with a `#fragment` to an id that JavaScript builds later, so I removed the fragment. The accessibility test treated the deliberately cropped mosaic tiles as "clipped text", so it now skips them (their text tags are not clipped).
+- **Say:** "A good name makes a result feel personal, and I made it from a pure function so I could test it."
+
+---
+
 ## How I test (say this too)
 
 1. **Unit tests** (`node tests/match.test.js`): the scoring and sharing logic.

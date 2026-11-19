@@ -390,6 +390,17 @@
     ]);
   }
 
+  /* A named profile for the answers, e.g. "The Quiet Silver" (JM.profile, in match.js). */
+  function profileBlock() {
+    var pr = JM.profile(state.answers);
+    if (!pr) return null;
+    return el('div', { class: 'profile' }, [
+      el('p', { class: 'meta', text: state.shared ? 'Their match profile' : 'Your match profile' }),
+      el('p', { class: 'profile__name', text: pr.title }),
+      el('p', { class: 'profile__line', text: pr.line })
+    ]);
+  }
+
   function renderResults() {
     var out = JM.rank(state.answers);
 
@@ -445,6 +456,7 @@
       state.shared
         ? el('p', { class: 'page-intro shared-note', text: 'Someone sent you their edit. These are the four pieces that match what they chose.' })
         : null,
+      profileBlock(),
       summary,
       head
     ]));

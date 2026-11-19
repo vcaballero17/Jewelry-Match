@@ -45,7 +45,7 @@ async function open(b, [name, url, setup], vp) {
 // elements whose text is cut off by their own box
 const clipped = () => [...document.querySelectorAll('body *')].filter(e => {
   const cs = getComputedStyle(e);
-  if (cs.display === 'none' || cs.visibility === 'hidden' || e.closest('.vh, .look--row, .table-wrap')) return false;
+  if (cs.display === 'none' || cs.visibility === 'hidden' || e.closest('.vh, .look--row, .table-wrap, .mosaic__tile')) return false;
   if (!e.textContent.trim() || e.children.length > 3) return false;
   const hiddenX = ['hidden', 'clip'].includes(cs.overflowX) && e.scrollWidth > e.clientWidth + 1;
   const hiddenY = ['hidden', 'clip'].includes(cs.overflowY) && e.scrollHeight > e.clientHeight + 1;

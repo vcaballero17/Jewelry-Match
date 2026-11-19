@@ -337,6 +337,37 @@ test('look link: a skipped place decodes to "none" and encodeLook ignores wrong-
   assert.strictEqual(JM.encodeLook({ ear: 'kite-pinky', neckline: 'melt-collar' }), 'look-000-009-000-000-000');
 });
 
+console.log('\nMatch profile');
+
+test('a profile is named from mood and material, with a line from the form', function () {
+  var pr = JM.profile({ placement: 'ear', form: 'liquid', material: 'silver', mood: 'quiet' });
+  assert.strictEqual(pr.title, 'The Quiet Silver');
+  assert.strictEqual(pr.line, 'Poured, never made. Worn at the ear.');
+});
+
+test('all 16 mood + material pairs give 16 different names', function () {
+  var names = {};
+  JM.OPTIONS.mood.forEach(function (m) { JM.OPTIONS.material.forEach(function (mat) {
+    names[JM.profile({ placement: 'ankle', form: 'organic', material: mat.value, mood: m.value }).title] = true;
+  }); });
+  assert.strictEqual(Object.keys(names).length, 16);
+});
+
+test('two-word labels are capitalised on every word', function () {
+  assert.strictEqual(JM.profile({ placement: 'ear', form: 'angular', material: 'yellow-stone', mood: 'after-dark' }).title, 'The After Dark Yellow Stone');
+});
+
+test('every form has a line, and the placement is named in lower case', function () {
+  JM.OPTIONS.form.forEach(function (f) { assert.ok(JM.PROFILE_LINES[f.value], f.value); });
+  assert.ok(/Worn at the across the hand\.$/.test(JM.profile({ placement: 'across-hand', form: 'angular', material: 'gold', mood: 'sharp' }).line));
+});
+
+test('incomplete or invalid answers give no profile', function () {
+  assert.strictEqual(JM.profile({ placement: 'ear' }), null);
+  assert.strictEqual(JM.profile({ placement: 'ear', form: 'x', material: 'silver', mood: 'quiet' }), null);
+  assert.strictEqual(JM.profile(null), null);
+});
+
 console.log('\n' + passed + ' tests passed' + (process.exitCode ? ' (some FAILED)' : '') + '\n');
 
 /* ----------------------------------------------------------

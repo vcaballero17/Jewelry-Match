@@ -266,6 +266,31 @@ JM.decodeLook = function (text) {
   return chosen > 0 ? look : null;
 };
 
+/* ----------------------------------------------------------
+   Match profile: a short name for a set of answers.
+   Mood + material make the name ("The Quiet Silver"); the form
+   adds one line of attitude; the placement says where it lives.
+   Pure function: same answers, same profile, and nothing is stored.
+   Returns null if the answers are not valid.
+   ---------------------------------------------------------- */
+JM.PROFILE_LINES = {
+  angular:  'Cut in hard lines.',
+  liquid:   'Poured, never made.',
+  delicate: 'Fine enough to forget, strong enough to remember.',
+  organic:  'Grown, not drawn.'
+};
+JM.profile = function (answers) {
+  if (!JM.validateAnswers(answers).valid) return null;
+  // Capital letter on every word, so "After dark" becomes "After Dark".
+  function words(text) { return text.replace(/\b[a-z]/g, function (c) { return c.toUpperCase(); }); }
+  var mood = words(JM.labelOf('mood', answers.mood));
+  var material = words(JM.labelOf('material', answers.material));
+  return {
+    title: 'The ' + mood + ' ' + material,
+    line: JM.PROFILE_LINES[answers.form] + ' Worn at the ' + JM.labelOf('placement', answers.placement).toLowerCase() + '.'
+  };
+};
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = JM;
 }
