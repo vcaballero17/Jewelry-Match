@@ -535,3 +535,72 @@ html:has(.look-flow) { scroll-padding-bottom: 9rem; }   /* keyboard focus is nev
   .mosaic__tile img { transition: transform 600ms cubic-bezier(.2, .8, .2, 1); }
   .mosaic__tile a:hover img { transform: scale(1.75); }
 }
+
+/* ==========================================================
+   Simpler Home: one clear action, three steps, one closing call
+   ========================================================== */
+.hero__lead { max-width: 34ch; }
+.btn--big { min-height: 56px; padding: .9rem 2rem; font-size: 1rem; }
+.hero__note { margin-top: .75rem; }
+.hero__alt { margin-top: .5rem; }
+.hero__alt a { display: inline-flex; align-items: center; min-height: 44px; }
+
+.steps { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; list-style: none; padding: 0; }
+.steps__item { display: grid; gap: .35rem; align-content: start; padding-top: 1rem; border-top: 3px solid var(--black); }
+.steps__no { font-family: var(--font-display); font-weight: 900; font-size: 3.5rem; line-height: .8; letter-spacing: -.05em; color: var(--oxblood); }
+.steps__title { font-family: var(--font-display); font-weight: 900; font-size: 1.375rem; line-height: .95; letter-spacing: -.04em; text-transform: uppercase; }
+.steps__item p { max-width: 36ch; }
+@media (min-width: 48rem) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gutter); } }
+
+.home-end { display: grid; justify-items: start; gap: 1rem; margin-top: 4rem; padding-block: 2rem; border-top: 3px solid var(--black); }
+.home-end__title { font-family: var(--font-display); font-weight: 900; font-size: clamp(2.5rem, 9vw, 6rem); line-height: .88; letter-spacing: -.045em; text-transform: uppercase; }
+
+/* Archive filters: folded away on a phone, always open on a wide screen */
+.filters-panel { margin-top: 1.5rem; border-top: var(--rule); }
+.filters-panel__summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  min-height: 48px; cursor: pointer; list-style: none;
+  font-weight: 700; font-size: .875rem; letter-spacing: .08em; text-transform: uppercase;
+}
+.filters-panel__summary::-webkit-details-marker { display: none; }
+.filters-panel__summary::after { content: "+"; font-size: 1.5rem; line-height: 1; }
+.filters-panel[open] > .filters-panel__summary::after { content: "\2212"; }
+.filters-panel__state { margin-left: auto; font-weight: 400; color: var(--ink-muted); text-transform: none; letter-spacing: 0; }
+.filters-panel .filters { margin-top: 0; border-top: 0; }
+@media (min-width: 48rem) {
+  .filters-panel { border-top: 0; margin-top: 0; }
+  .filters-panel__summary { display: none; }
+  .filters-panel .filters { margin-top: 1.5rem; border-top: var(--rule); }
+}
+
+/* ==========================================================
+   More life: scroll slide-in, an invitation on the body map,
+   a pop when you choose or save. All of it only for people who
+   have not asked for reduced motion.
+   ========================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal { transform: translateY(28px); }
+  .reveal.is-in { transform: none; transition: transform 700ms cubic-bezier(.2, .8, .2, 1); }
+  .mosaic.reveal-run .mosaic__tile { animation: jm-rise 500ms ease-out backwards; }
+
+  /* Body map: the numbered dots breathe until you choose a place. */
+  @keyframes jm-ring { 0% { box-shadow: 0 0 0 0 rgba(110, 19, 32, .45); } 70%, 100% { box-shadow: 0 0 0 12px rgba(110, 19, 32, 0); } }
+  .bodymap:not(:has([aria-pressed="true"])) .hotspot__num { animation: jm-ring 2s ease-out infinite; }
+  .hotspot:hover .hotspot__num, .hotspot:focus-visible .hotspot__num { animation: none; transform: scale(1.12); transition: transform var(--dur); }
+
+  /* Choosing: the card pops a little, the check mark appears. */
+  @keyframes jm-pop { 0% { transform: scale(.96); } 60% { transform: scale(1.025); } 100% { transform: none; } }
+  .choice input:checked + .choice__body { animation: jm-pop 260ms ease-out; }
+  .chip input:checked + span { animation: jm-pop 220ms ease-out; }
+
+  /* Progress segments fill in rather than snapping. */
+  .progress__seg { transition: background-color 300ms; }
+
+  /* Save heart pops when a piece is saved. */
+  @keyframes jm-heart { 0% { transform: scale(1); } 40% { transform: scale(1.5); } 100% { transform: scale(1); } }
+  .btn--small.is-saved > span[aria-hidden] { display: inline-block; animation: jm-heart 350ms ease-out; }
+
+  /* Score bars grow when the result opens. */
+  @keyframes jm-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .bd__fill { transform-origin: left; animation: jm-grow 700ms cubic-bezier(.2, .8, .2, 1) backwards; }
+}

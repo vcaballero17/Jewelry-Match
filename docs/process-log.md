@@ -21,7 +21,7 @@ The project folder:
 ```
 index.html  match.html  archive.html  object.html  saved.html  about.html
 css/   tokens.css  base.css  components.css  pages.css
-js/    data.js  match.js  storage.js  ui.js  quiz.js  archive.js  object.js  saved.js  home.js
+js/    data.js  match.js  storage.js  ui.js  quiz.js  archive.js  object.js  saved.js  motion.js  (home.js was removed in Stage 21)
 assets/images/   (14 AI-generated photos)
 tests/  tools/  docs/
 ```
@@ -225,6 +225,19 @@ tests/  tools/  docs/
 - **Small bug found by my own tests:** "After dark" printed as "The After dark Gold". I now capitalise every word.
 - **Two test adjustments, not site bugs:** the link checker flagged links with a `#fragment` to an id that JavaScript builds later, so I removed the fragment. The accessibility test treated the deliberately cropped mosaic tiles as "clipped text", so it now skips them (their text tags are not clipped).
 - **Say:** "A good name makes a result feel personal, and I made it from a pure function so I could test it."
+
+---
+
+## Stage 21: Less overwhelm, clearer path, more life (20 Nov)
+
+- **Why:** I asked for a check of the user experience: does a visitor know exactly what to do, and does anything feel like too much? I looked at the Home page (3,138 px tall) and counted the choices it offered.
+- **What I found:** the Home page gave about five ways to start (three quick picks, two buttons, a mosaic, a "first look" grid) and repeated the same photos twice. On a phone, the Edit page opened with four rows of filter chips before the first piece.
+- **Home page, now one job** (`index.html`): one big "Find your match" button, a small note ("4 questions, about a minute, nothing to sign up for"), and a quiet link to browse. Then three numbered steps in plain words, the "Up close" mosaic, and one closing button. I removed the quick picks and the duplicate "A first look" grid, and replaced the jargon "Four choices, weighted" with "Answer three quick questions". The page is 2,746 px tall now (about 390 px shorter on desktop). `home.js` is gone because nothing needed it.
+- **The Edit page on a phone** (`archive.html`, `js/archive.js`): the filters fold into one "Filters" row that says "none chosen" or "2 chosen", so the pieces come first. On a wide screen they stay open. If a filter is already on (from a link), the panel opens by itself. It uses the built-in `<details>` element, so the keyboard and screen readers work for free. The intro now says what each path is for: browse here, or take the quiz for a suggestion.
+- **Motion with rules** (`js/motion.js`, end of `css/pages.css`): sections slide up as they scroll into view (position only, never opacity, so nothing can be invisible); the numbered dots on the body map pulse until you choose a place; chosen cards and chips pop; the save heart pops; score bars grow. Everything sits inside `prefers-reduced-motion: no-preference`, and `motion.js` does nothing for people who asked for less motion.
+- **Test changes, not bugs:** the old Home test looked for the removed quick picks and cards, so it now checks for one start button. A compare test now opens the folded filters first, like a real phone user.
+- **New test:** `tests/browser/e2e15.js` covers one start button, three steps, no duplicate sections, reveal behaviour, reduced motion, folded filters, the filter count, and the body-map invitation.
+- **Say:** "I removed things to make the site easier to use. Every page now has one main action, and motion is optional for people who prefer less."
 
 ---
 

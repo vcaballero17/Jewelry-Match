@@ -49,6 +49,7 @@ const check = (n, ok, d) => { console.log((ok ? '  PASS  ' : '  FAIL  ') + n + (
     await cardOf('Kite Pinky').locator('.compare-check input').focus(); await p.keyboard.press('Space');
     check(`@${w} space bar ticks a box`, await cardOf('Kite Pinky').locator('.compare-check input').isChecked());
     // selection survives a filter change
+    if (await p.locator('.filters-panel__summary').isVisible()) await p.click('.filters-panel__summary');   // on a phone the filters start folded
     await p.click('#filter-placement-ear');
     await p.click('#filter-placement-any');
     check(`@${w} tick survives filtering`, await cardOf('Kite Pinky').locator('.compare-check input').isChecked());

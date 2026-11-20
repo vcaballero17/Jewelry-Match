@@ -37,11 +37,14 @@
 
   <main id="main" class="page simple-page">
     <h1 class="step-title">The Edit</h1>
-    <p class="page-intro">Twelve objects, tagged by where they live on the body. Choose a filter in any group, or leave it on Any.</p>
+    <p class="page-intro">Twelve pieces, tagged by where they live on the body. Browse them all, or open Filters to narrow them down. Want a suggestion instead? <a href="match.html">Take the quiz.</a></p>
 
-    <form class="filters" id="filters" aria-label="Filter the collection" onsubmit="return false">
-      <!-- The four filter groups are built by js/archive.js -->
-    </form>
+    <details class="filters-panel" id="filters-panel">
+      <summary class="filters-panel__summary">Filters <span id="filters-state" class="filters-panel__state">none chosen</span></summary>
+      <form class="filters" id="filters" aria-label="Filter the collection" onsubmit="return false">
+        <!-- The four filter groups are built by js/archive.js -->
+      </form>
+    </details>
 
     <div class="toolbar">
       <p class="count" id="count" role="status"></p>

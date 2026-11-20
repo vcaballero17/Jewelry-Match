@@ -28,15 +28,14 @@ const check = (n, ok, d) => { console.log((ok ? '  PASS  ' : '  FAIL  ') + n + (
   page.on('pageerror', e => problems.push(e.message));
   await page.goto(BASE + 'index.html');
   check('one h1', (await page.locator('h1').count()) === 1);
-  check('three featured cards', (await page.locator('#featured .card').count()) === 3);
+
   check('footer present with AI disclosure', /AI-generated/.test(await page.textContent('.site-footer')));
   check('nav marks Home as current', (await page.locator('.site-nav [aria-current=page]').textContent()).trim() === 'Home');
-  await page.click('.quickpick[data-placement=little-finger]');
+  check('home has exactly one primary action to start', (await page.locator('.hero .btn--big').count()) === 1);
+  await page.click('.hero .btn--big');
   await page.waitForURL(/match\.html/);
   await page.waitForTimeout(200);
-  const title = await page.textContent('h1');
-  check('quick pick opens quiz at Form step', /form/i.test(title), title);
-  check('placement carried over (progress text mentions 2)', /2/.test(await page.textContent('#progress')), await page.textContent('#progress'));
+  check('the start button opens the body map (step 1)', /body map/i.test(await page.textContent('h1')));
   await page.goto(BASE + 'about.html#scoring'); 
   check('about has one h1', (await page.locator('h1').count()) === 1);
   check('about has two tables with captions', (await page.locator('table caption').count()) === 2);

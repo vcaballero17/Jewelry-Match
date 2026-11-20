@@ -105,6 +105,7 @@
         ? (saved ? 'Remove' : 'Save')
         : (saved ? 'Remove from your edit' : 'Save to your edit');
       btn.textContent = '';
+      btn.classList.toggle('is-saved', saved);
       if (opts.compact) {
         btn.appendChild(ui.el('span', { 'aria-hidden': 'true', text: saved ? '♥ ' : '♡ ' }));
       }

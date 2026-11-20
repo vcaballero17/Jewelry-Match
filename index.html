@@ -1,11 +1,9 @@
 <!doctype html>
 <!-- ==========================================================
      index.html  -  the Home page.
-     The masthead, the hero and the three quick picks are plain
-     HTML, so they work even without JavaScript. js/home.js adds
-     two things: it fills the "first look" cards from the shared
-     data, and it remembers which quick pick you tapped so the
-     quiz can start one step further along.
+     Everything here is plain HTML, so it works without JavaScript.
+     The page has one job: send people to the quiz. js/motion.js only
+     adds a small slide-in as sections scroll into view.
      ========================================================== -->
 <html lang="en">
 <head>
@@ -51,40 +49,37 @@
 
       <div class="hero__body">
         <h2 class="hero__title" id="hero-heading">Where should it live?</h2>
-        <p class="hero__lead">Tell us where it should live and what you are drawn to. We will return a small, explainable edit, not an endless catalog.</p>
-
-        <ul class="quickpicks" aria-label="Start with a place">
-          <li>
-            <a class="quickpick" href="match.html" data-placement="ear">
-              <img src="assets/images/drop-study.jpg" alt="" width="1122" height="1402" loading="lazy">
-              <span class="meta" aria-hidden="true">001</span>
-              <span class="quickpick__label">Ear</span>
-            </a>
-          </li>
-          <li>
-            <a class="quickpick" href="match.html" data-placement="little-finger">
-              <img src="assets/images/kite-pinky.jpg" alt="" width="1122" height="1402" loading="lazy">
-              <span class="meta" aria-hidden="true">002</span>
-              <span class="quickpick__label">Little finger</span>
-            </a>
-          </li>
-          <li>
-            <a class="quickpick" href="match.html" data-placement="across-hand">
-              <img src="assets/images/afterimage.jpg" alt="" width="1122" height="1402" loading="lazy">
-              <span class="meta" aria-hidden="true">003</span>
-              <span class="quickpick__label">Across the hand</span>
-            </a>
-          </li>
-        </ul>
-
+        <p class="hero__lead">Answer four quick questions. We pick four pieces for you and tell you why.</p>
         <div class="hero__actions">
-          <a class="btn" href="match.html">Find your match &rarr;</a>
-          <a class="btn btn--ghost" href="archive.html">Browse the edit</a>
+          <a class="btn btn--big" href="match.html">Find your match &rarr;</a>
         </div>
+        <p class="meta hero__note">4 questions &middot; about a minute &middot; nothing to sign up for</p>
+        <p class="hero__alt"><a href="archive.html">Or just browse all twelve pieces</a></p>
       </div>
     </section>
 
-    <section class="home-section" aria-labelledby="mosaic-heading">
+    <section class="home-section" aria-labelledby="how-heading" data-reveal>
+      <h2 class="section-title" id="how-heading">How it works</h2>
+      <ol class="steps">
+        <li class="steps__item">
+          <span class="steps__no" aria-hidden="true">1</span>
+          <h3 class="steps__title">Pick a place on the body.</h3>
+          <p>Ear, finger, hand, neckline or ankle.</p>
+        </li>
+        <li class="steps__item">
+          <span class="steps__no" aria-hidden="true">2</span>
+          <h3 class="steps__title">Answer three quick questions.</h3>
+          <p>Shape, material and mood. Tap one answer each time.</p>
+        </li>
+        <li class="steps__item">
+          <span class="steps__no" aria-hidden="true">3</span>
+          <h3 class="steps__title">Build your look and send it.</h3>
+          <p>Choose a piece for each place, or just one, then share a single link. <a href="about.html#scoring">How the match is scored.</a></p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="home-section" aria-labelledby="mosaic-heading" data-reveal>
       <h2 class="section-title" id="mosaic-heading">Up close</h2>
       <ul class="mosaic">
         <li class="mosaic__tile mosaic__tile--lead">
@@ -118,32 +113,12 @@
           </a>
         </li>
       </ul>
+      <p class="home-more"><a href="archive.html">See all twelve pieces &rarr;</a></p>
     </section>
 
-    <section class="home-section" aria-labelledby="featured-heading">
-      <h2 class="section-title" id="featured-heading">A first look</h2>
-      <div class="object-grid object-grid--plain" id="featured">
-        <noscript><p class="notice">Open <a href="archive.html">The Edit</a> to see all twelve objects.</p></noscript>
-      </div>
-      <p class="home-more"><a href="archive.html">See all twelve objects &rarr;</a></p>
-    </section>
-
-    <section class="home-section" aria-labelledby="how-heading">
-      <h2 class="section-title" id="how-heading">How it works</h2>
-      <ul class="how">
-        <li>
-          <h3 class="how__title">The body comes first.</h3>
-          <p>You start with a place: ear, finger, hand, neckline or ankle. Everything else follows from there.</p>
-        </li>
-        <li>
-          <h3 class="how__title">Four choices, weighted.</h3>
-          <p>Form, material and mood refine the match. Placement counts the most, because it decides what can be worn.</p>
-        </li>
-        <li>
-          <h3 class="how__title">Every match explained.</h3>
-          <p>Each piece comes with a percentage and the exact choices it shares with you. <a href="about.html#scoring">See how the scoring works.</a></p>
-        </li>
-      </ul>
+    <section class="home-end" aria-labelledby="end-heading" data-reveal>
+      <h2 class="home-end__title" id="end-heading">Ready?</h2>
+      <a class="btn btn--big" href="match.html">Find your match &rarr;</a>
     </section>
   </main>
 
@@ -164,6 +139,6 @@
   <script src="js/match.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/ui.js"></script>
-  <script src="js/home.js"></script>
+  <script src="js/motion.js"></script>
 </body>
 </html>

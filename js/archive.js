@@ -17,6 +17,11 @@
   var countEl = document.getElementById('count');
   var clearBtn = document.getElementById('clear-all');
   var emptyEl = document.getElementById('empty');
+  var panelEl = document.getElementById('filters-panel');
+  var stateEl = document.getElementById('filters-state');
+  // On a wide screen the filters are always open. On a phone they start folded
+  // away (so the pieces come first) unless a filter is already on.
+  var wide = window.matchMedia('(min-width: 48rem)');
 
   var DIM_LABEL = { placement: 'Placement', form: 'Form', material: 'Material / color', mood: 'Mood' };
 
@@ -260,6 +265,7 @@
   function update() {
     var items = JM.filterItems(JM.jewelry, filters);
     var active = activeDims();
+    stateEl.textContent = active.length ? active.length + ' chosen' : 'none chosen';
 
     grid.textContent = '';
     emptyEl.textContent = '';
@@ -311,4 +317,9 @@
 
   update();
   renderBar();
+
+  // Open the filter panel on wide screens, or when a filter is already on (from the address).
+  panelEl.open = wide.matches || activeDims().length > 0;
+  var onResize = function () { if (wide.matches) panelEl.open = true; };
+  if (wide.addEventListener) wide.addEventListener('change', onResize); else wide.addListener(onResize);
 })();
